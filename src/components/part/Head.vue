@@ -1,22 +1,22 @@
 <template>
-    <div :class="$style.root">
+    <div :class="$style.root" >
       <div class="panel panel-default">
-        <div class="panel-body">
+        <div class="panel-body" style="background: url(../../../static/img/bg.jpg) repeat">
              <div :class="$style.con">
                   <div :class="$style.item">
                       <p :class="$style.title">
-                        <span class="glyphicon glyphicon-send"></span>
-                        基于GIS的城市空间形态量算与分析系统
+                        <span class="glyphicon glyphicon-leaf"></span>
+                       {{title}}
                       </p>
                   </div>
                 <Nav :class="$style.item" :list="nav"></Nav>
 
                  <div :class="$style.item">
                    <div class="dropdown">
-                     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                       <span class="glyphicon glyphicon-user">
+                     <button style="  background-color: #75ca17;" class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                       <span class="glyphicon glyphicon-user" style="color: #FFFFFF;">
                        </span>
-                       <span class="caret"></span>
+                       <span class="caret"  style="color: #FFFFFF;"></span>
                      </button>
                      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
                        <li><a href="#">{{user.zh}}</a></li>
@@ -25,7 +25,6 @@
                      </ul>
                    </div>
                  </div>
-
              </div>
         </div>
       </div>
@@ -41,7 +40,8 @@
          Nav
        },
        props:{
-          nav:Array
+          nav:Array,
+           title:String,
        },
        data:function(){
          return{
@@ -64,8 +64,9 @@
 <style lang="scss" module>
   .root{
     /*background-color: black;*/
-    color: #337ab7;
+    color: #FFFFFF;
       height: 70px;
+
     .con{
       display: flex;
       .item:nth-child(1){
@@ -77,10 +78,12 @@
       .item:nth-child(2){
         width: 62%;
         padding: 0rem 0 0 5rem;
+
       }
       .item:nth-child(3){
         padding: 0.5rem 0 0 0.1rem;
         width: 3%;
+
       }
     }
   }

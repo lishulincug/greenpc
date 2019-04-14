@@ -17,6 +17,9 @@ export default new Vuex.Store({
     distance:0,
     area:0,
       features:[],
+      showQuery:false,//显示查询
+      showDispatchTask:false,
+      showAreaStatistics:false,
   },
   mutations:{
     setSecondMenuList(state,v){
@@ -34,6 +37,15 @@ export default new Vuex.Store({
     setUser(state,v){
       state.user=v;
     },
+      setShowQuery(state,v){
+          state.showQuery=v;
+      },
+      setShowDispatchTask(state,v){
+          state.showDispatchTask=v;
+      },
+      setShowAreaStatistics(state,v){
+          state.showAreaStatistics=v;
+      },
     setShowCenter(state,v){
       state.showCenter=v;
     },

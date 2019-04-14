@@ -1,16 +1,18 @@
 export default {
   //标题
-  title:'基于GIS的城市空间形态量算与分析系统',
+  title:'基于GIS的校园绿地养护系统',
   //地图配置
   map:{
     option:{
       crs:L.CRS.EPSG4326,
         center: [20, 80],
+        // center:[ 506951.56 , 4340982.44 ],
         maxZoom: 18,
         zoom: 2,
        measureControl:true,
     },
-    url:"http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World",
+      url:"http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World",
+      // url:'http://localhost:8090/iserver/services/map-xxq_mapall2/rest/maps/mapall@xxq',
       dataUrl:"http://support.supermap.com.cn:8090/iserver/services/data-world/rest/data",
   },
   //导航菜单
@@ -35,10 +37,13 @@ export default {
           }
       ]
     },
+      {
+          name:'综合查询',
+      },
     {
-      name:'数据管理',
+      name:'任务分发',
       children:[
-        {
+        /*{
           name:'数据检索',
         },
         {
@@ -46,40 +51,173 @@ export default {
         },
           {
               name:'清除',
-          }
+          }*/
       ]
     },
     {
-      name:'形态分析',
+      name:'统计分析',
       children:[
-        {
-          name:'重心迁移分析',
-        },
-        {
-          name:'紧凑度分析',
-        },
-        {
-          name:'延伸率分析',
-        },
-        {
-          name:'形状比分析',
-        },
+
           {
               name:'清除',
           }
       ]
     },
+      {
+          name:'病虫害防治',
+          children:[
+
+              {
+                  name:'清除',
+              }
+          ]
+      },
     // {
     //   name:'城市空间量算',
     // },
     {
-      name:'专题地图',
+      name:'问题上报',
     },
-    {
-      name:'个人信息',
+
+
+  ],
+//    综合查询
+    query:{
+       l1:[
+           '区域查询',
+           '人员查询',
+           '植被查询',
+       ],
+        l2:[
+            '草坪',
+            '树木',
+        ],
+        l3:[
+            '乔木',
+            '灌木'
+          ],
     },
-      {
-          name:'清除',
-      },
-  ]
+//    任务分发
+    dispatchTask:{
+      task:[
+
+          {
+              name:'草坪灌溉',
+              checked:false
+          },
+          {
+              name:  '草坪修剪',
+              checked:false
+          },
+          {
+              name:'草坪施肥',
+              checked:false
+          },
+          {
+              name:'草坪补植',
+              checked:false
+          },
+          {
+              name: '病虫防治',
+              checked:false
+          },
+          {
+              name:  '树木修剪',
+              checked:false
+          },{
+              name: '树木灌溉',
+              checked:false
+          },{
+              name: '树木补植',
+              checked:false
+          },
+
+
+
+
+
+
+
+      ],
+        quyu:[
+            {
+                name:'一区',
+                children:[
+                ],
+                checked:false
+            },
+            {
+                name:'二区',
+                children:[
+                ],
+                checked:false
+            },
+            {
+                name:'三区',
+                children:[],
+                checked:false
+            },
+            {
+                name:'四区',
+                children:[],
+                checked:false
+            },
+            {
+                name:'五区',
+                children:[],
+                checked:false
+            },
+            {
+                name:'六区',
+                children:[],
+                checked:false
+            },
+            {
+                name:'七区',
+                children:[],
+                checked:false
+            },
+
+        ],
+        mans:[
+            [
+              '张三',
+                '李四',
+                '张五',
+            ],
+
+            [
+                '李二'
+            ],
+            [
+                '3111'
+            ],
+        ],
+    },
+//    区域统计
+    AreaStatistics:{
+      name:'未知',
+        list:[
+            {
+                name:'草坪',
+                symbol:'../../../static/img/cp.png',
+                count:0,
+            },
+            {
+                name:'乔木',
+                symbol:'../../../static/img/qm.png',
+                count:0,
+            },
+            {
+                name:'灌木',
+                symbol:'../../../static/img/gm.png',
+                count:0,
+            },
+            {
+                name:'养护员',
+                symbol:'../../../static/img/man.png',
+                count:0,
+            },
+        ]
+    }
 }

@@ -1,7 +1,7 @@
 <template>
-  <ul class="nav  nav-pills root" >
+  <ul class="nav  nav-pills root"  >
     <li v-for="(item) in list"  role="presentation" @click="select(item)">
-      <a href="#">{{item.name}}</a>
+      <a href="#" style=" color: #FFFFFF;">{{item.name}}</a>
     </li>
   </ul>
 </template>
@@ -18,6 +18,18 @@
             if (i.name.indexOf('个人')>-1){
               this.$store.commit('setShowCenter',true)
             }
+            if (i.name.indexOf('查询')>-1){
+                this.$store.commit('setShowQuery',true)
+
+            }
+              if (i.name.indexOf('分发')>-1){
+                  this.$store.commit('setShowDispatchTask',true)
+
+              }
+              if (i.name.indexOf('统计')>-1){
+                  this.$store.commit('setShowAreaStatistics',true)
+
+              }
           }
         },
 
@@ -27,5 +39,8 @@
 <style scoped>
   .root{
 
+  }
+  a:visited{
+    color:black;
   }
 </style>

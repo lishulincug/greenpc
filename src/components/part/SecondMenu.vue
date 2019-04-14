@@ -70,7 +70,7 @@ li{
   cursor: pointer;
 }
   .height{
-    background-color: lightskyblue;
+    background-color: #75ca17;
     color: white;
   }
   .normal{

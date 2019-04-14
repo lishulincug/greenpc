@@ -236,7 +236,8 @@
                      var featuers = serviceResult.result.features;
                      this.setFeatures(featuers)
                  }.bind(this));
-             }
+             },
+         //    专题地图
          }
     }
 </script>

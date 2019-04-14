@@ -1,10 +1,12 @@
 <template>
   <div :class="$style.root">
-     <Head :class="$style.item" :nav="nav" ></Head>
+     <Head :class="$style.item" :nav="nav" :title="title" ></Head>
       <Map :class="$style.item" :option="map" ref="map" :db="dbConfig"></Map>
       <SecondMenu :class="$style.SecondMenu"></SecondMenu>
       <Center :class="$style.center" :user="user"></Center>
-      <Query :class="$style.query" ref="query"></Query>
+      <Query :class="$style.query" :queryO="query" ref="query"></Query>
+     <DispatchTask :class="$style.DispatchTask" :dispatch="dispatch" ></DispatchTask>
+      <AreaStatistics :class="$style.AreaStatistics" :option="statistics" ></AreaStatistics>
   </div>
 </template>
 
@@ -12,8 +14,10 @@
    import config from '../config/config'
    import Head from '../part/Head'
    import Query from '../part/Query'
+   import DispatchTask from '../part/DispatchTask'
    import Map from '../map/Map'
    import SecondMenu from '../part/SecondMenu'
+   import AreaStatistics from '../part/AreaStatistics'
    import MapTool from '../toolbar/MapTool'
    import Center from '../user/Center'
    import db from '../config/db'
@@ -23,13 +27,17 @@
           SecondMenu,
           Head,
           Map,
-          MapTool,Center,Query
+          MapTool,Center,Query,DispatchTask,AreaStatistics
         },
         data:function () {
          return{
            nav:config.resourceMenu,SecondMenu,
            map:config.map,
-             dbConfig:db
+             dbConfig:db,
+             title:config.title,
+             query:config.query,
+             dispatch:config.dispatchTask,
+             statistics:config.AreaStatistics
          }
         },
         computed:{
@@ -41,7 +49,7 @@
             }
         },
         mounted() {
-              this.$refs.query.map=this.getMap()
+              // this.$refs.query.map=this.getMap()
         },
       methods:{
           control(i){
@@ -67,7 +75,7 @@
     width: 100%;
     height: 100%;
     display: flex;
-    position: relative;
+    /*position: relative;*/
      flex-direction: column;
      .item:nth-child(1){
 
@@ -79,7 +87,7 @@
 
      /*pointer-events: none;*/
    }
-     .SecondMenu,.maptool,.center,.query{
+     .SecondMenu,.maptool,.center,.query,.DispatchTask,.AreaStatistics{
          position: absolute;
          z-index: 999;
      }
@@ -103,6 +111,14 @@
      .query{
          left:39%;
          top:20%
+     }
+     .DispatchTask{
+         left:35%;
+         top:20%
+     }
+     .AreaStatistics{
+         right:1%;
+         top:12%
      }
  }
 </style>

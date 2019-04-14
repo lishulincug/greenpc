@@ -1,21 +1,37 @@
 <template>
-    <div class="panel panel-default col-md-4" v-show="visible">
-        <div class="panel-heading" style="display: flex;">
-            <span style="flex: 70%">综合检索</span>
-            <span style="cursor: pointer;" @click="close">&times;</span>
+    <transition enter-active-class="animated rollIn" leave-active-class="animated rollOut">
+    <div class="panel panel-default root col-md-4" v-show="visible">
+        <div class="panel-heading root"  style="display: flex;">
+            <span style="flex: 70%; color: white" >综合检索</span>
+            <span style="cursor: pointer; color: white" @click="close">&times;</span>
         </div>
         <div class="panel-body">
             <div>
                 <div class="form-group">
-                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="">
+                   <!-- <input type="email" class="form-control" id="exampleInputEmail1" placeholder="">-->
+                    <select  class="form-control" @change="changeL1" v-model="l1Value">
+                        <option :value="item" v-for="item in l1">{{item}}</option>
+                    </select>
+                </div>
+                <div class="form-group" v-show="showL2" >
+                    <!-- <input type="email" class="form-control" id="exampleInputEmail1" placeholder="">-->
+                    <select  class="form-control" @change="changeL2" v-model="l2Value">
+                        <option :value="item" v-for="item in l2">{{item}}</option>
+                    </select>
+                </div>
+                <div class="form-group" v-show="showL3"  v-model="l3Value">
+                    <!-- <input type="email" class="form-control" id="exampleInputEmail1" placeholder="">-->
+                    <select  class="form-control">
+                        <option :value="item" v-for="item in l3">{{item}}</option>
+                    </select>
                 </div>
                 <div class="form-group">
-                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="">
+                    <input type="text" class="form-control" id="exampleInputPassword1"  v-model="ID" placeholder="请输入ID">
                 </div>
                 <hr>
-                <div class="form-group" v-show="more">
-
-                    <a href="#" class="glyphicon glyphicon-flash btn" @click="querygeo" title="几何查询"></a>
+                <div class="form-group " v-show="more">
+                    <a href="#" @click="querygeo" class="tool btn btn-success">缓冲区查询</a>
+                    <a href="#" @click="querygeo" class="tool btn btn-success">多边形查询</a>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-default" @click="query">查询</button>
@@ -25,6 +41,7 @@
             </div>
         </div>
     </div>
+    </transition>
 </template>
 
 <script>
@@ -34,18 +51,51 @@
 
             data(){
                 return{
-                 visible:true,
+                 visible:false,
                     map:{},
-                    more:false
+                    more:false,
+                    l1:this.queryO.l1,
+                    l2:this.queryO.l2,
+                    l3:this.queryO.l3,
+                    showL2:false,
+                    showL3:false,
+                    l1Value:'',
+                    l2Value:'',
+                    l3Value:'',
+                    ID:''
                 }
             },
+           props:{
+            queryO:Object
+           },
         methods:{
+            changeL1(){
+
+                if (this.l1Value.indexOf('植被')>-1){
+                    this.showL2=true;
+
+                }  else{
+                    this.showL2=false;
+                    this.showL3=false;
+                    this.l2Value='草坪'
+                }
+            },
+            changeL2(){
+                if (this.l2Value.indexOf('树木')>-1){
+                    this.showL3=true;
+
+                }  else{
+                    this.showL3=false;
+                }
+            },
             querygeo(){
                 Bus.$emit('querygeo')
                 this.close()
             },
             query(){
-                Bus.$emit('query',{})
+                Bus.$emit('query',{
+
+                })
                 this.close()
             },
             showMore(){
@@ -57,11 +107,32 @@
             close(){
                 this.visible=false
                 this.more=false
+                this.$store.commit('setShowQuery',false)
+            }
+        },
+        computed:{
+            showQuery(){
+                return this.$store.state.showQuery
+            }
+        },
+        watch:{
+            showQuery(){
+                  if (this.showQuery){
+                      this.show()
+                  } else{
+                      this.close()
+                  }
             }
         }
     }
 </script>
 
 <style scoped>
-
+.root{
+    background-color: gray;
+    opacity: 0.8;
+}
+.tool{
+    border-radius: 50%;
+}
 </style>
