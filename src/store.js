@@ -20,14 +20,15 @@ export default new Vuex.Store({
       showQuery:false,//显示查询
       showDispatchTask:false,
       showAreaStatistics:false,
+      showBch:false,
   },
   mutations:{
-    setSecondMenuList(state,v){
-      state.SecondMenuList=v;
-    },
-    pushItemToSecondMenu(state,v){
-      state.SecondMenuList.push(v);
-    },
+      setSecondMenuList(state,v){
+        state.SecondMenuList=v;
+      },
+      pushItemToSecondMenu(state,v){
+        state.SecondMenuList.push(v);
+      },
       setFeatures(state,v){
           state.features=v;
       },
@@ -39,6 +40,9 @@ export default new Vuex.Store({
     },
       setShowQuery(state,v){
           state.showQuery=v;
+      },
+      setShowBch(state,v){
+        state.showBch=v;
       },
       setShowDispatchTask(state,v){
           state.showDispatchTask=v;

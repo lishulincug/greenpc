@@ -70,7 +70,7 @@
 </script>
 
 <style lang="scss" module>
-  $height:580px;
+  $height:840px;
  .root{
     width: 100%;
     height: 100%;
