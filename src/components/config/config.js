@@ -4,16 +4,18 @@ export default {
   //地图配置
   map:{
     option:{
-      crs:L.CRS.EPSG4326,
-        center: [20, 80],
-        // center:[ 506951.56 , 4340982.44 ],
-        maxZoom: 18,
-        zoom: 2,
+      crs:L.CRS.NonEarthCRS({
+        bounds: L.bounds([ 506077.42 , 4340213.02 ], [508570.72 , 4342564.64]),
+        origin: L.point(506077.42, 4342564.64)
+      }),
+      center: [4340999.44,506821.56 ],
+      maxZoom: 10,
+      zoom: 2,
        measureControl:true,
     },
-      url:"http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World",
-      // url:'http://localhost:8090/iserver/services/map-xxq_mapall2/rest/maps/mapall@xxq',
-      dataUrl:"http://support.supermap.com.cn:8090/iserver/services/data-world/rest/data",
+      // url:"http://support.supermap.com.cn:8090/iserver/services/map-changchun/rest/maps/长春市区图",
+      url:'http://101.200.50.47:8090/iserver/services/map-xxq_mapall/rest/maps/mapall@xxq',
+      dataUrl:"http://support.supermap.com.cn:8090/iserver/services/data-changchun/rest/data",
   },
   //导航菜单
   resourceMenu:[
