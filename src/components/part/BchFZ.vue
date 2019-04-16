@@ -1,5 +1,7 @@
 <template>
+  <transition enter-active-class="animated rollIn" leave-active-class="animated rollOut">
 
+  </transition>
 </template>
 
 <script>
