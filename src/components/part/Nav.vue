@@ -30,6 +30,11 @@
                   this.$store.commit('setShowAreaStatistics',true)
 
               }
+              if (i.name.indexOf('防治')>-1){
+
+                  this.$store.commit('setShowBch',true)
+
+              }
           }
         },
 

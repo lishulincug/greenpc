@@ -1,6 +1,14 @@
 <template>
   <transition enter-active-class="animated rollIn" leave-active-class="animated rollOut">
-
+    <div class="panel panel-default" v-show="visible">
+      <div class="panel-heading">
+        <span>Panel heading without title</span>
+        <span @click="close">&times;</span>
+      </div>
+      <div class="panel-body">
+        Panel content
+      </div>
+    </div>
   </transition>
 </template>
 
@@ -35,6 +43,17 @@
     }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.panel-heading{
+   display: flex;
+  span{
+    span:nth-child(1){
+      flex: 95%;
+    }
+    span:nth-child(2){
+      flex: 5%;
+    }
+  }
+}
 
 </style>

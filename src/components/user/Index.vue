@@ -7,6 +7,7 @@
       <Query :class="$style.query" :queryO="query" ref="query"></Query>
      <DispatchTask :class="$style.DispatchTask" :dispatch="dispatch" ></DispatchTask>
       <AreaStatistics :class="$style.AreaStatistics" :option="statistics" ></AreaStatistics>
+      <BchFZ :class="$style.BchFZ"></BchFZ>
   </div>
 </template>
 
@@ -18,6 +19,7 @@
    import Map from '../map/Map'
    import SecondMenu from '../part/SecondMenu'
    import AreaStatistics from '../part/AreaStatistics'
+   import BchFZ from '../part/BchFZ'
    import MapTool from '../toolbar/MapTool'
    import Center from '../user/Center'
    import db from '../config/db'
@@ -27,7 +29,7 @@
           SecondMenu,
           Head,
           Map,
-          MapTool,Center,Query,DispatchTask,AreaStatistics
+          MapTool,Center,Query,DispatchTask,AreaStatistics,BchFZ,
         },
         data:function () {
          return{
@@ -87,7 +89,7 @@
 
      /*pointer-events: none;*/
    }
-     .SecondMenu,.maptool,.center,.query,.DispatchTask,.AreaStatistics{
+     .SecondMenu,.maptool,.center,.query,.DispatchTask,.AreaStatistics,.BchFZ{
          position: absolute;
          z-index: 999;
      }
@@ -119,6 +121,10 @@
      .AreaStatistics{
          right:1%;
          top:12%
+     }
+     .BchFZ{
+         left:30%;
+         top:22%
      }
  }
 </style>
