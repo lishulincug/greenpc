@@ -6,7 +6,19 @@
         <span @click="close">&times;</span>
       </div>
       <div class="panel-body">
-        Panel content
+        <div class="head">
+          <ul>
+            <li></li>
+          </ul>
+        </div>
+        <div class="body">
+          <div class="left">
+
+          </div>
+           <div class="info">
+
+          </div>
+        </div>
       </div>
     </div>
   </transition>

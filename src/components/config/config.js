@@ -221,5 +221,19 @@ export default {
                 count:0,
             },
         ]
-    }
+    },
+//   病虫害列表
+    bch:[
+        {
+            name:'',
+            list:[
+                {
+                    name:'',
+                    info:{
+                        
+                    }
+                }
+            ]
+        }
+    ]
 }
