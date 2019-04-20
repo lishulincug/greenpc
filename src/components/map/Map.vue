@@ -16,8 +16,25 @@
         },
          mounted:function(){
           this.init()
-             Bus.$on('query',this.query);
-             Bus.$on('querygeo',this.querygeo);
+
+             Bus.$on('query',function (d) {
+
+                 switch (d.key) {
+                     case 'quyu':
+                         this.queryQuyu(d.value)
+                         break;
+                     case 'man':
+                         this.queryMan(d.Value)
+                         break;
+                     case 'zhibei':
+                         this.queryZhibei(d.Value)
+                         break;
+                 }
+             }.bind(this));
+             // Bus.$on('querMan',this.querygeo);
+             Bus.$on('querByGeo',function (d) {
+                 this.querygeo(d.ds)
+             }.bind(this));
          },
         data:function(){
           return{
@@ -39,10 +56,15 @@
         },
         watch:{
           result(){
+              this.clear()
               let resultLayer = L.geoJSON(this.result, {
                   onEachFeature: function (feature, layer) {
-                      layer.bindPopup("ID: " + feature.properties.SMID +
-                          "<br> " + feature.properties.COUNTRY);
+                      let t=''
+                      //quyu
+                      if (feature.properties.NAME){
+                          t="当前位置 " + feature.properties.NAME
+                      }
+                      layer.bindPopup(t);
                   }
               }).addTo(this.map);
           }
@@ -53,7 +75,7 @@
              query(){
                  this.queryByIds([246, 247])
              },
-             querygeo(){
+             querygeo(item){
                  var options = {
                      position: 'topleft',
                      draw: {
@@ -83,7 +105,8 @@
                      }
                      this.editableLayers.addLayer(layer);
                      let p=L.polygon(layer.editing.latlngs[0], {})
-                     this.queryBYGeos(p)
+                     item.p=p;
+                     this.queryBYGeos(item)
                  }.bind(this));
              },
              ///////////////////////////////////////////////////////////////////////////
@@ -189,11 +212,11 @@
              });
            },
          //    通过id检索
-             queryByIds(ids){
+             queryByIds(item){
                  // 数据集ID查询服务参数
                  var idsParam = new SuperMap.GetFeaturesByIDsParameters({
-                     IDs: ids,
-                     datasetNames: [`${db.dataSourceName}:${db.dataSetName}`]
+                     IDs: [item.id],
+                     datasetNames: [`${db.dataSourceName}:${item.ds}`]
                  });
                 // 创建指定ID查询实例
                  L.supermap.featureService(this.option.dataUrl).getFeaturesByIDs(idsParam, function (serviceResult) {
@@ -205,11 +228,11 @@
                  }.bind(this));
              },
          //    sql
-             queryBySql(){
+             queryBySql(item){
                  var sqlParam = new SuperMap.GetFeaturesBySQLParameters({
                      queryParameter: {
-                         name: `${db.dataSetName}@${db.dataSourceName}`,
-                         attributeFilter: db.attributeFilter
+                         name: `${db.dataSetName}@${item.ds}`,
+                         attributeFilter: item.attr
                      },
                      datasetNames: [`${db.dataSourceName}:${db.dataSetName}`]
                  });
@@ -221,13 +244,13 @@
                  }.bind(this));
              },
          //    query by geos
-             queryBYGeos(polygon){
+             queryBYGeos(item){
 // 设置几何查询范围
 //                  var polygon = L.polygon([[0, 0], [-30, 0], [-10, 30], [0, 0]], {color: 'red'});
 // 设置任意几何范围查询参数
                  var geometryParam = new SuperMap.GetFeaturesByGeometryParameters({
-                     datasetNames: [`${db.dataSourceName}:${db.dataSetName}`],
-                     geometry: polygon,
+                     datasetNames: [`${db.dataSourceName}:${item.ds}`],
+                     geometry: item.p,
                      spatialQueryMode: "INTERSECT" // 相交空间查询模式
                  });
 // 创建任意几何范围查询实例
@@ -237,8 +260,20 @@
                      this.setFeatures(featuers)
                  }.bind(this));
              },
-         //    专题地图
-         }
+         //    查询
+             queryQuyu(item){
+                 this.queryBySql(item)
+             },
+             queryMan(item){
+                 this.queryByIds(item)
+             },
+             queryZhibei(item){
+                 this.queryByIds(item)
+             }
+         },
+
+
+
     }
 </script>
 

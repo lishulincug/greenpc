@@ -1,22 +1,35 @@
+let [dev,real]=[{
+     option:{
+         crs: L.CRS.NonEarthCRS({
+             bounds: L.bounds([48.4, -7668.25], [8958.85, -55.58]),
+             origin: L.point(48.4, -55.58)
+         }),
+         center: [-4500, 4000],
+         maxZoom: 18,
+         zoom: 1
+     },
+    url:"http://support.supermap.com.cn:8090/iserver/services/map-changchun/rest/maps/长春市区图",
+},
+    {
+        option:{
+            crs:L.CRS.NonEarthCRS({
+                bounds: L.bounds([ 506077.42 , 4340213.02 ], [508570.72 , 4342564.64]),
+                origin: L.point(506077.42, 4342564.64)
+            }),
+            center: [4340999.44,506821.56 ],
+            maxZoom: 10,
+            zoom: 2,
+            measureControl:true,
+        },
+//101.200.50.47
+        url:'http://localhost:8090/iserver/services/map-xxq_mapall2/rest/maps/mapall@xxq',
+        dataUrl:"http://localhost:8090/iserver/services/data-xxq_mapall2/rest/data/",
+    }]
 export default {
   //标题
   title:'基于GIS的校园绿地养护系统',
   //地图配置
-  map:{
-    option:{
-      crs:L.CRS.NonEarthCRS({
-        bounds: L.bounds([ 506077.42 , 4340213.02 ], [508570.72 , 4342564.64]),
-        origin: L.point(506077.42, 4342564.64)
-      }),
-      center: [4340999.44,506821.56 ],
-      maxZoom: 10,
-      zoom: 2,
-       measureControl:true,
-    },
-      // url:"http://support.supermap.com.cn:8090/iserver/services/map-changchun/rest/maps/长春市区图",
-      url:'http://101.200.50.47:8090/iserver/services/map-xxq_mapall/rest/maps/mapall@xxq',
-      dataUrl:"http://support.supermap.com.cn:8090/iserver/services/data-changchun/rest/data",
-  },
+  map:real,
   //导航菜单
   resourceMenu:[
     {
@@ -223,17 +236,111 @@ export default {
         ]
     },
 //   病虫害列表
-    bch:[
-        {
-            name:'',
-            list:[
-                {
-                    name:'',
-                    info:{
-                        
-                    }
-                }
-            ]
-        }
-    ]
+    bch:{
+      caoping:{
+          name:'草坪',
+          list:[
+              {
+                  name:'病1',
+                  info:{
+                      名称:'狗尾草',
+                      防治措施:'措施',
+                      发病期:'3~4月份',
+                      防治周期:'',//防治周期,
+                      图片:'../../../static/img/man.png'
+                  }
+              },
+
+          ],
+          list1:[
+              {
+                  name:'虫1',
+                  info:{
+                      名称:'虫1',
+                      防治措施:'措施',
+                      发病期:'3~4月份',
+                      防治周期:'',//防治周期,
+                      图片:'../../../static/img/man.png'
+                  }
+              },
+          ]
+      },
+       tree:{
+           name:'树木',
+          type:[
+              {
+                  name:'乔木',
+                  children:[
+                      {
+                          name:'乔木',
+                          list:[
+                              {
+                                  name:'乔木1狗尾草',
+                                  info:{
+                                      名称:'虫1',
+                                      防治措施:'措施',
+                                      发病期:'3~4月份',
+                                      防治周期:'',//防治周期,
+                                      图片:'../../../static/img/man.png'
+                                  }
+                              },
+                          ]
+                      },
+                      {
+                          name:'乔木2',
+                          list:[
+                              {
+                                  name:'乔木2-狗尾草',
+                                  info:{
+                                      名称:'虫1',
+                                      防治措施:'措施',
+                                      发病期:'3~4月份',
+                                      防治周期:'',//防治周期,
+                                      图片:'../../../static/img/man.png'
+                                  }
+                              },
+                          ]
+                      },
+                  ]
+              },
+              {
+                  name:'灌木',
+                  children:[
+                      {
+                          name:'灌木',
+                          list:[
+                              {
+                                  name:'灌木1狗尾草',
+                                  info:{
+                                      名称:'虫1',
+                                      防治措施:'措施',
+                                      发病期:'3~4月份',
+                                      防治周期:'',//防治周期,
+                                      图片:'../../../static/img/man.png'
+                                  }
+                              },
+                          ]
+                      },
+                      {
+                          name:'灌木2',
+                          list:[
+                              {
+                                  name:'灌木2狗尾草',
+                                  info:{
+                                      name:'狗尾草',
+                                      method:'措施',
+                                      bfq:'3~4月份',
+                                      zhouqi:'',//防治周期,
+                                      pic:'../../../static/img/man.png'
+                                  }
+                              },
+                          ]
+                      },
+                  ]
+              },
+          ],
+
+       }
+    }
+
 }

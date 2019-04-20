@@ -89,14 +89,34 @@
                 }
             },
             querygeo(){
-                Bus.$emit('querygeo')
+                if (this.l1Value.indexOf('植被')>-1)
+                {
+                    Bus.$emit('queryByGeo',{
+                        ds:'zb',
+                    })
+                }
                 this.close()
             },
-            query(){
-                Bus.$emit('query',{
 
-                })
+            query(){
+                let key='',ds=''
+                if (this.l1Value.indexOf('区域')>-1){
+                    key='quyu'
+                    ds='quyu'
+                }else if (this.l1Value.indexOf('人员')>1){
+                    key='man'
+                }else{
+                    key='zhibei'
+                }
+                Bus.$emit('query',{
+                    key:key,
+                    value:{
+                        attr:"NAME like '%"+this.ID+"%'",
+                        ds:ds
+                    }
+                });
                 this.close()
+
             },
             showMore(){
               this.more=!this.more

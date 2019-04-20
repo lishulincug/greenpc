@@ -7,7 +7,7 @@
       <Query :class="$style.query" :queryO="query" ref="query"></Query>
      <DispatchTask :class="$style.DispatchTask" :dispatch="dispatch" ></DispatchTask>
       <AreaStatistics :class="$style.AreaStatistics" :option="statistics" ></AreaStatistics>
-      <BchFZ :class="$style.BchFZ"></BchFZ>
+      <BchFZ :class="$style.BchFZ" :bch="bch"></BchFZ>
   </div>
 </template>
 
@@ -39,7 +39,8 @@
              title:config.title,
              query:config.query,
              dispatch:config.dispatchTask,
-             statistics:config.AreaStatistics
+             statistics:config.AreaStatistics,
+             bch:config.bch
          }
         },
         computed:{
@@ -72,7 +73,7 @@
 </script>
 
 <style lang="scss" module>
-  $height:840px;
+  $height:540px;
  .root{
     width: 100%;
     height: 100%;
@@ -123,6 +124,7 @@
          top:12%
      }
      .BchFZ{
+         width: 50%;
          left:30%;
          top:22%
      }
