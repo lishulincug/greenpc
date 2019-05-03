@@ -1,7 +1,7 @@
 <template>
-    <transition enter-active-class="animated rollIn" leave-active-class="animated rollOut">
+    <transition enter-active-class="animated slideInDown" leave-active-class="animated slideOutUp">
         <div class="panel panel-default" v-show="visible">
-            <div class="panel-heading">当前位置：{{option.name}}&nbsp;<span @click="close">&times;</span></div>
+            <div class="panel-heading">当前位置：{{option.name}}&nbsp;<span class="close" @click="close">&times;</span></div>
             <div class="panel-body">
                 <table class="table" >
                     <tr v-for="(item,index) in option.list">
@@ -19,6 +19,11 @@
         props:{
             option:Object,
 
+        },
+        mounted(){
+          Bus.$on('统计分析',e=>{
+              this.visible=!this.visible
+          })
         },
         data(){
             return{

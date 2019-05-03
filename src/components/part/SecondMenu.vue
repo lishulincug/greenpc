@@ -10,6 +10,7 @@
 </template>
 
 <script>
+
     export default {
         name: "SecondMenu",
        props:{
@@ -23,17 +24,17 @@
        methods:{
 
           select:function (item,i) {
-             let map=this.$parent.$refs.map
              this.key=i
-             switch (item.name) {
+             Bus.$emit(item.event)
+              /*switch (item.name) {
                case '比例尺':
                  map.addScale()
                  break;
                case '地图鹰眼':
                  map.addMinimap()
                  break;
-               case '地图平移':
-                 map.addPan()
+               case '地图复位':
+                   map.reset();
                  break;
                 case '空间量算':
                  map.initMeasure()
@@ -47,7 +48,7 @@
                      break;
 
 
-             }
+             }*/
           }
        },
       computed:{

@@ -1,9 +1,9 @@
 <template>
-    <transition enter-active-class="animated rollIn" leave-active-class="animated rollOut">
+    <transition enter-active-class="animated rotateIn" leave-active-class="animated rotateOut">
     <div class="panel panel-default root col-md-4" v-show="visible">
         <div class="panel-heading root"  style="display: flex;">
-            <span style="flex: 70%; color: white" >综合检索</span>
-            <span style="cursor: pointer; color: white" @click="close">&times;</span>
+            <span style="flex: 70%; " >综合检索</span>
+            <span style="cursor: pointer; " @click="close">&times;</span>
         </div>
         <div class="panel-body">
             <div>
@@ -19,9 +19,9 @@
                         <option :value="item" v-for="item in l2">{{item}}</option>
                     </select>
                 </div>
-                <div class="form-group" v-show="showL3"  v-model="l3Value">
+                <div class="form-group" v-show="showL3"  >
                     <!-- <input type="email" class="form-control" id="exampleInputEmail1" placeholder="">-->
-                    <select  class="form-control">
+                    <select  class="form-control" v-model="l3Value">
                         <option :value="item" v-for="item in l3">{{item}}</option>
                     </select>
                 </div>
@@ -30,8 +30,8 @@
                 </div>
                 <hr>
                 <div class="form-group " v-show="more">
-                    <a href="#" @click="querygeo" class="tool btn btn-success">缓冲区查询</a>
-                    <a href="#" @click="querygeo" class="tool btn btn-success">多边形查询</a>
+                    <a href="#" @click="queryMore(0)" class="tool btn btn-success">缓冲区查询</a>
+                    <a href="#" @click="queryMore(1)" class="tool btn btn-success">多边形查询</a>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-default" @click="query">查询</button>
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-    import Bus from '../common/Bus'
+
     export default {
         name: "Query",
 
@@ -68,6 +68,11 @@
            props:{
             queryO:Object
            },
+        mounted(){
+            Bus.$on('查询',e=>{
+                this.visible=!this.visible
+            })
+        },
         methods:{
             changeL1(){
 
@@ -88,33 +93,78 @@
                     this.showL3=false;
                 }
             },
-            querygeo(){
-                if (this.l1Value.indexOf('植被')>-1)
-                {
-                    Bus.$emit('queryByGeo',{
-                        ds:'zb',
-                    })
+            queryMore(i){
+                let attr='',key='',ds=''
+                if (i==0){
+                    key='queryByBuffer'
+                } else{
+                    key='queryByGeo'
                 }
+                if (this.l2Value.indexOf('树木')>-1)
+                {
+
+                    attr="类型 like '%"+this.l3Value+"%'"
+                    ds='tree'
+                }
+                if (this.l2Value.indexOf('草坪')>-1)
+                {
+
+                    attr="1=1"
+                    ds='caoping'
+                }
+                Bus.$emit(key,{
+                    key:{},
+                    value:{
+                        ds:ds,
+                        attr:attr
+                    }
+                })
                 this.close()
             },
 
             query(){
-                let key='',ds=''
+
+                let key='',ds='',attr=''
                 if (this.l1Value.indexOf('区域')>-1){
                     key='quyu'
                     ds='quyu'
-                }else if (this.l1Value.indexOf('人员')>1){
+                    attr="NAME like '%"+this.ID+"%'"
+                }else if (this.l1Value.indexOf('人员')>-1){
                     key='man'
+                    attr="MAN_NAME like '%"+this.ID+"%'"
+                    ds='man'
                 }else{
-                    key='zhibei'
+
+                    if (this.l2Value.indexOf('草坪')>-1){
+                        key='cp'
+                        attr="编号 like '%"+this.ID+"%'"
+                        ds='caoping'
+                    }
+                    if (this.l2Value.indexOf('树木')>-1){
+                         if(this.l3Value.indexOf('乔木')>-1){
+                             key='qm'
+
+                         }else{
+                             key='gm'
+                         }
+
+                        if (this.ID===''){
+                            attr="类型 like '%"+this.l3Value+"%'"
+                        } else{
+                            attr="编号 like '%"+this.ID+"%'"
+                        }
+                        ds='tree'
+                    }
                 }
+
                 Bus.$emit('query',{
                     key:key,
                     value:{
-                        attr:"NAME like '%"+this.ID+"%'",
+                        attr:attr,
                         ds:ds
                     }
                 });
+
                 this.close()
 
             },
@@ -149,8 +199,9 @@
 
 <style scoped>
 .root{
-    background-color: gray;
-    opacity: 0.8;
+
+    /*background-color: gray;*/
+    /*opacity: 0.8;*/
 }
 .tool{
     border-radius: 50%;

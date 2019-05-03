@@ -1,52 +1,67 @@
 <template>
-    <transition enter-active-class="animated rollIn" leave-active-class="animated rollOut">
-    <div :class="$style.root" v-show="visible">
-        <div :class="$style.head">
-            <span>任务分发</span>
-            <span @click="close">&times;</span>
+    <transition enter-active-class="animated bounceIn" leave-active-class="animated bounceOut">
+        <div class="panel panel-default" style="width: 40%;"  v-show="visible">
+            <div class="panel-heading">
+                <span>任务分发</span>
+                <span @click="close" class="close">&times;</span>
+            </div>
+            <div class="panel-body col-md-12"  >
+                <div :class="$style.nav">
+                    <span>养护工作<span class="badge" @click="addTaskItem" title="添加任务">+</span></span>
+                    <span >养护区域</span>
+                    <span>养护员</span>
+                </div>
+                <div :class="$style.content">
+                    <div :class="$style.item" class="col-md-5">
+                        <ul class="list-group" >
+                            <li class="list-group-item" :class="i.checked==true?$style.height:$style.normal"  v-for="(i,index) in dispatch.task" >
+                                <input type="checkbox" :value="i.name" v-model="tasks" @click="addTask(i,index)">
+                                {{i.name}}
+                                <span class="badge" @click="delTaskItem(index)" title="删除任务">-</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div :class="$style.item" class="col-md-4">
+                        <ul class="list-group" >
+                            <li class="list-group-item" v-for="(i,index) in quyu" >
+                                <input type="checkbox" :value="i" v-model="result">
+                                {{i.name}}
+                                <span class="badge" @click="selectQuyu(i,index)">{{i.children.length}}</span>
+
+                                <transition enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
+                                    <ul class="list-group" v-if="childKey==index&&i.children.length>0">
+                                        <li class="list-group-item" v-for="k in i.children">{{k}}</li>
+                                    </ul>
+                                </transition>
+                                <!--任务数量-->
+
+                            </li>
+
+                        </ul>
+                    </div>
+                    <div :class="$style.item" class="col-md-3">
+                        <ul class="list-group">
+                            <li class="list-group-item" v-for="i in man">{{i}}</li>
+
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="panel-footer">
+                    <span style="width: 100%;background-color: #71c913" class="btn btn-success"  @click="ok">分发</span>
+                </div>
+
+            </div>
         </div>
-        <div :class="$style.nav">
-            <span>养护工作<span class="badge" @click="addTaskItem" title="添加任务">+</span></span>
-            <span >养护区域</span>
-            <span>养护员</span>
+    <div >
+       <!-- <div :class="$style.head">
 
         </div>
-        <div :class="$style.item">
-            <ul class="list-group" >
-                <li class="list-group-item" :class="i.checked==true?$style.height:$style.normal"  v-for="(i,index) in dispatch.task" >
-                    <input type="checkbox" :value="i.name" v-model="tasks" @click="addTask(i,index)">
-                    {{i.name}}
-                    <span class="badge" @click="delTaskItem(index)" title="删除任务">-</span>
-                </li>
-            </ul>
-        </div>
-        <div :class="$style.item">
-            <ul class="list-group" >
-                <li class="list-group-item" v-for="(i,index) in quyu" >
-                    <input type="checkbox" :value="i" v-model="result">
-                    {{i.name}}
-                    <span class="badge" @click="selectQuyu(i,index)">{{i.children.length}}</span>
 
-                    <transition enter-active-class="animated zoomIn" leave-active-class="animated zoomOut">
-                    <ul class="list-group" v-if="childKey==index&&i.children.length>0">
-                        <li class="list-group-item" v-for="k in i.children">{{k}}</li>
-                    </ul>
-                    </transition>
-                    <!--任务数量-->
 
-                </li>
-
-            </ul>
-        </div>
-        <div :class="$style.item">
-            <ul class="list-group">
-                <li class="list-group-item" v-for="i in man">{{i}}</li>
-
-            </ul>
-        </div>
         <div :class="$style.foot">
-            <span style="width: 100%;background-color: #71c913" class="btn btn-success"  @click="ok">分发</span>
-        </div>
+
+        </div>-->
 
     </div>
     </transition>
@@ -70,6 +85,11 @@
                 heightKey:null,
                 tasks:[]
             }
+        },
+        mounted(){
+            Bus.$on('任务分发',e=>{
+                this.visible=!this.visible
+            })
         },
         methods:{
             close(){
@@ -148,21 +168,26 @@
 </script>
 
 <style lang="scss" module>
-    $bgcolor:grey;
-    $fontColor:#FFFFFF;
+    $bgcolor:white;
+    $fontColor:black;
  .root{
      display: flex;
      flex-direction: row;
      flex-wrap: wrap;
      width: auto;
-     opacity: 0.8;
+     /*opacity: 0.8;*/
      color: $fontColor;
        position: relative;
-     .head,.nav{
+     .head,.nav,.content{
          width: 90%;
          background-color: $bgcolor;
          display: flex;
      }
+     .content{
+         display: flex;
+         flex-direction: row;
+     }
+
      .foot{
 
          position: absolute;
@@ -187,7 +212,7 @@
      }
      .item{
 
-       width:30%;
+
          li{
          cursor:pointer;
              background-color: $bgcolor;

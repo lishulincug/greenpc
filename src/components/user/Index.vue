@@ -8,6 +8,9 @@
      <DispatchTask :class="$style.DispatchTask" :dispatch="dispatch" ></DispatchTask>
       <AreaStatistics :class="$style.AreaStatistics" :option="statistics" ></AreaStatistics>
       <BchFZ :class="$style.BchFZ" :bch="bch"></BchFZ>
+      <MapTool :class="$style.MapTool"></MapTool>
+      <DataManager :class="$style.DataManager" :option="dataManager"></DataManager>
+      <Device :class="$style.Device" :option="device"></Device>
   </div>
 </template>
 
@@ -18,8 +21,10 @@
    import DispatchTask from '../part/DispatchTask'
    import Map from '../map/Map'
    import SecondMenu from '../part/SecondMenu'
+   import DataManager from '../part/DataManager'
    import AreaStatistics from '../part/AreaStatistics'
    import BchFZ from '../part/BchFZ'
+   import Device from '../part/Device'
    import MapTool from '../toolbar/MapTool'
    import Center from '../user/Center'
    import db from '../config/db'
@@ -29,18 +34,20 @@
           SecondMenu,
           Head,
           Map,
-          MapTool,Center,Query,DispatchTask,AreaStatistics,BchFZ,
+          MapTool,Center,Query,DispatchTask,AreaStatistics,BchFZ,DataManager,Device
         },
         data:function () {
          return{
            nav:config.resourceMenu,SecondMenu,
-           map:config.map,
+              map:config.map,
              dbConfig:db,
              title:config.title,
              query:config.query,
              dispatch:config.dispatchTask,
              statistics:config.AreaStatistics,
-             bch:config.bch
+             bch:config.bch,
+             dataManager: config.dataManager,
+             device:config.device
          }
         },
         computed:{
@@ -64,7 +71,7 @@
                 this.$refs.map.addMinimap();
                 break;
               case 2:
-                this.$refs.map.addPan();
+                this.$refs.map.reset();
                 break;
             }
           }
@@ -73,12 +80,12 @@
 </script>
 
 <style lang="scss" module>
-  $height:540px;
+  $height:640px;
  .root{
     width: 100%;
     height: 100%;
     display: flex;
-    /*position: relative;*/
+    position: relative;
      flex-direction: column;
      .item:nth-child(1){
 
@@ -90,12 +97,11 @@
 
      /*pointer-events: none;*/
    }
-     .SecondMenu,.maptool,.center,.query,.DispatchTask,.AreaStatistics,.BchFZ{
+     .SecondMenu,.maptool,.center,.query,.DispatchTask,.AreaStatistics,.BchFZ,.MapTool,.DataManager,.Device{
          position: absolute;
          z-index: 999;
      }
    .SecondMenu{
-
      right: 0.6%;
      top: 18%;
    }
@@ -119,13 +125,21 @@
          left:35%;
          top:20%
      }
-     .AreaStatistics{
+     .AreaStatistics,.Device{
          right:1%;
          top:12%
      }
      .BchFZ{
          width: 50%;
          left:30%;
+         top:22%
+     }
+     .MapTool{
+         left:91%;
+         top:80%
+     }
+     .DataManager{
+         left:36%;
          top:22%
      }
  }

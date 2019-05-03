@@ -21,10 +21,14 @@ export default new Vuex.Store({
       showDispatchTask:false,
       showAreaStatistics:false,
       showBch:false,
+      queryParam:{},
   },
   mutations:{
+      setQueryParam(state,v){
+        state.queryParam=v;
+      },
       setSecondMenuList(state,v){
-        state.SecondMenuList=v;
+          state.SecondMenuList=v;
       },
       pushItemToSecondMenu(state,v){
         state.SecondMenuList.push(v);

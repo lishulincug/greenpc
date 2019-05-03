@@ -1,5 +1,5 @@
 <template>
-  <transition enter-active-class="animated rollIn" leave-active-class="animated rollOut">
+  <transition enter-active-class="animated bounceIn" leave-active-class="animated bounceOut">
     <div class="panel panel-default" v-show="visible">
       <div class="panel-heading">
 
@@ -96,7 +96,7 @@
         },
         data(){
           return{
-            visible:true,
+            visible:false,
               key:0,
               showC:true,
               showT:false,
@@ -109,11 +109,12 @@
               tree:{}
           }
         },
+
         mounted(){
-            this.list=this.bch.caoping.list;
-
+            Bus.$on('病虫害防治',e=>{
+                this.visible=!this.visible
+            })
         },
-
       methods:{
           selectTreeType(){
 

@@ -16,14 +16,14 @@ let [dev,real]=[{
                 bounds: L.bounds([ 506077.42 , 4340213.02 ], [508570.72 , 4342564.64]),
                 origin: L.point(506077.42, 4342564.64)
             }),
-            center: [4340999.44,506821.56 ],
+            center: [4341399.44,507291.56 ],
             maxZoom: 10,
-            zoom: 2,
+            zoom: 1,
             measureControl:true,
         },
 //101.200.50.47
-        url:'http://localhost:8090/iserver/services/map-xxq_mapall2/rest/maps/mapall@xxq',
-        dataUrl:"http://localhost:8090/iserver/services/data-xxq_mapall2/rest/data/",
+        url:'http://101.200.50.47:8090/iserver/services/map-xxq_mapall/rest/maps/mapall@xxq',
+        dataUrl:"http://101.200.50.47:8090/iserver/services/data-xxq_mapall/rest/data/",
     }]
 export default {
   //标题
@@ -34,27 +34,31 @@ export default {
   resourceMenu:[
     {
       name:'基础操作',
+
       children:[
         {
-          name:'空间量算'
+          name:'空间量算',
+            event:'measure',
         },
         {
           name:'比例尺',
+            event:'scale',
         },
         {
           name:'地图鹰眼',
+            event:'minimap',
         },
         {
-          name:'地图平移',
+          name:'地图复位',
+            event:'resetPosition',
         },
           {
               name:'清除',
+              event:'clear',
           }
       ]
     },
-      {
-          name:'综合查询',
-      },
+
     {
       name:'任务分发',
       children:[
@@ -69,6 +73,11 @@ export default {
           }*/
       ]
     },
+      {
+          name:'在线编辑',
+          children:[
+          ]
+      },
     {
       name:'统计分析',
       children:[
@@ -87,12 +96,17 @@ export default {
               }
           ]
       },
-    // {
-    //   name:'城市空间量算',
-    // },
-    {
-      name:'问题上报',
-    },
+
+      {
+          name:'设备模拟',
+          children:[
+
+
+          ]
+      },
+        // {
+        //   name:'问题上报',
+        // },
 
 
   ],
@@ -341,6 +355,48 @@ export default {
           ],
 
        }
+    },
+    dataManager:{
+      dataSourceName:'xxq',
+      actions:[
+           `选择操作类型`,
+          '新增',
+          '编辑',
+          '删除',
+      ],
+        features:[
+            {
+                name:'选择数据集类型'
+            },
+            {
+                name:'草坪',
+                dataSetName:'caoping',
+            },
+            {
+                name:'树木',
+                dataSetName:'tree',
+            },
+        ]
+    },
+    device:{
+      types:[
+          {
+              name:'请选择设备',
+          },
+          {
+              name:'喷灌设备',
+              types:[
+                  {
+                      name:'近射程（23m）',
+                      value:23,
+                  },
+                  {
+                      name:'中射程(48m)',
+                      value:48
+                  },
+              ]
+          }
+      ]
     }
 
 }
