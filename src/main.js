@@ -8,6 +8,7 @@ import 'animate.css';
 import iView from 'iview'
 import Tester from './components/common/Tester'
 import echarts from 'echarts'
+import 'iview/dist/styles/iview.css'
 
 window.echarts = echarts
 Vue.use(iView)

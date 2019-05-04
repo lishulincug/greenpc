@@ -69,6 +69,7 @@
         },
         mounted() {
               // this.$refs.query.map=this.getMap()
+            this.$Message.info('hello world!')
         },
       methods:{
           control(i){
