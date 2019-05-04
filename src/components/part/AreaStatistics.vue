@@ -8,7 +8,10 @@
                         <td><img class="symbol" :src="item.symbol" alt=""></td><td>{{item.name}}</td><td>{{item.count}}</td>
                     </tr>
                 </table>
+              <hr/>
+              <span class="btn glyphicon glyphicon-tag" @click="choose" title="选择"></span>&nbsp;
             </div>
+
         </div>
     </transition>
 </template>
@@ -27,7 +30,7 @@
         },
         data(){
             return{
-                visible:false
+                visible:true
             }
         },
         methods:{
@@ -35,6 +38,37 @@
                 this.visible=false
                 this.$store.commit('setShowAreaStatistics',false)
             },
+            //测试
+            choose(){
+               let data={}
+               data.legendData=['灌木','乔木']
+               data.seriesData=[
+                 {
+                   name:'灌木',
+                   value:70
+                 },
+                 {
+                   name:'乔木',
+                   value:24
+                 },
+               ]
+              data.text='植被数目统计'
+              // data.name='数目'
+              data.legendData1=['草坪','其它']
+              data.seriesData1=[
+                {
+                  name:'草坪',
+                  value:40
+                },
+                {
+                  name:'其它',
+                  value:50
+                },
+              ]
+              data.text1='草地面积统计'
+
+               Bus.$emit('restore',data)
+            }
         },
         computed:{
             show(){

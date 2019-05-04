@@ -22,6 +22,7 @@ export default new Vuex.Store({
       showAreaStatistics:false,
       showBch:false,
       queryParam:{},
+      chartData:{}
   },
   mutations:{
       setQueryParam(state,v){
@@ -33,9 +34,12 @@ export default new Vuex.Store({
       pushItemToSecondMenu(state,v){
         state.SecondMenuList.push(v);
       },
-      setFeatures(state,v){
-          state.features=v;
+      setChartData(state,v){
+          state.chartData=v;
       },
+    setFeatures(state,v){
+      state.features=v;
+    },
       clearFeatures(state){
         state.features=[]
       },

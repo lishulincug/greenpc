@@ -84,6 +84,7 @@
                     this.showL3=false;
                     this.l2Value='草坪'
                 }
+                this.ID=''
             },
             changeL2(){
                 if (this.l2Value.indexOf('树木')>-1){
@@ -92,6 +93,7 @@
                 }  else{
                     this.showL3=false;
                 }
+              this.ID=''
             },
             queryMore(i){
                 let attr='',key='',ds=''
@@ -102,8 +104,7 @@
                 }
                 if (this.l2Value.indexOf('树木')>-1)
                 {
-
-                    attr="类型 like '%"+this.l3Value+"%'"
+                    attr="COL2 like '%"+this.l3Value+"%'"
                     ds='tree'
                 }
                 if (this.l2Value.indexOf('草坪')>-1)
@@ -112,9 +113,11 @@
                     attr="1=1"
                     ds='caoping'
                 }
+
                 Bus.$emit(key,{
-                    key:{},
+                    key:'query',
                     value:{
+                        type:key,
                         ds:ds,
                         attr:attr
                     }
@@ -135,26 +138,38 @@
                     ds='man'
                 }else{
 
+
                     if (this.l2Value.indexOf('草坪')>-1){
+
                         key='cp'
-                        attr="编号 like '%"+this.ID+"%'"
+                        if (this.ID!==''){
+                          attr="COL1=='"+this.ID+"'"
+                        } else{
+                          attr="SmID>0"
+                        }
+
                         ds='caoping'
                     }
-                    if (this.l2Value.indexOf('树木')>-1){
-                         if(this.l3Value.indexOf('乔木')>-1){
-                             key='qm'
 
-                         }else{
-                             key='gm'
-                         }
+                    if (this.l2Value.indexOf('树木')>-1&&this.l3Value===''&&this.ID===''){
 
-                        if (this.ID===''){
-                            attr="类型 like '%"+this.l3Value+"%'"
-                        } else{
-                            attr="编号 like '%"+this.ID+"%'"
-                        }
-                        ds='tree'
+                      attr="SmID >0"
+
+                    }else{
+                      if(this.l3Value.indexOf('乔木')>-1){
+                        key='qm'
+                      }else{
+                        key='gm'
+                      }
+
+                      if (this.ID===''){
+                        attr="col2 like '%"+this.l3Value+"%'"
+                      } else{
+                        attr="SmID =='"+(this.ID.substr(1,this.ID.length))+"'"
+                      }
+
                     }
+                  ds='tree'
                 }
 
                 Bus.$emit('query',{

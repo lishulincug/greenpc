@@ -20,8 +20,9 @@
         methods:{
           select:function (i) {
 
-            this.$store.commit('setSecondMenuList',i.children)
+
             Bus.$emit(i.name);
+            Bus.$emit('showMenu',i.children);
 
             // if (i.name.indexOf('个人')>-1){
             //   this.$store.commit('setShowCenter',true)
@@ -45,7 +46,6 @@
             //   }
           }
         },
-
     }
 </script>
 
@@ -57,6 +57,6 @@
     color:black;
   }
   .query{
-    margin-left: 20%;
+    margin-left: 10%;
   }
 </style>

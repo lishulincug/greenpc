@@ -23,7 +23,8 @@ let [dev,real]=[{
         },
 //101.200.50.47
         url:'http://101.200.50.47:8090/iserver/services/map-xxq_mapall/rest/maps/mapall@xxq',
-        dataUrl:"http://101.200.50.47:8090/iserver/services/data-xxq_mapall/rest/data/",
+        dataUrl:"http://101.200.50.47:8090/iserver/services/data-xxq_mapall/rest/data",
+    spatialanalystUrl:'http://101.200.50.47:8090/iserver/services/spatialAnalysis-xxq_mapall/restjsr/spatialanalyst'
     }]
 export default {
   //标题
@@ -51,6 +52,10 @@ export default {
         {
           name:'地图复位',
             event:'resetPosition',
+        },
+        {
+          name:'全屏',
+          event:'fullScreen',
         },
           {
               name:'清除',
@@ -82,9 +87,6 @@ export default {
       name:'统计分析',
       children:[
 
-          {
-              name:'清除',
-          }
       ]
     },
       {
@@ -359,22 +361,38 @@ export default {
     dataManager:{
       dataSourceName:'xxq',
       actions:[
-           `选择操作类型`,
-          '新增',
-          '编辑',
-          '删除',
+        {
+          name:`选择操作类型`,
+          value:''
+        },
+        {
+          name:'新增',
+          value:'add'
+        },
+        {
+          name:'编辑',
+          value:'update'
+        },
+        {
+          name: '删除',
+          value:'delete'
+        },
+
+
+
       ],
         features:[
             {
-                name:'选择数据集类型'
+                name:'选择数据集类型',
+              value:''
             },
             {
                 name:'草坪',
-                dataSetName:'caoping',
+                value:'caoping',
             },
             {
                 name:'树木',
-                dataSetName:'tree',
+                value:'tree',
             },
         ]
     },

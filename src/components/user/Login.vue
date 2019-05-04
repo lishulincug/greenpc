@@ -1,5 +1,5 @@
 <template>
-  <div class="root">
+  <div class="root" :style="style">
     <div class="panel panel-default col-md-5">
       <div class="panel-heading">
         <h3>{{title}}</h3>
@@ -45,12 +45,14 @@
        data:function(){
          return{
            title:config.title,
+
            user:{
              zh:'',
              pwd:''
            }
          }
        },
+
         methods:{
 
           login:function () {
@@ -60,7 +62,14 @@
               this.$router.push('/index');
             }.bind(this),1200)
           }
-        }
+        },
+      computed:{
+          style(){
+            return {
+              height:document.documentElement.clientHeight+'px'
+            }
+          }
+      }
     }
 </script>
 

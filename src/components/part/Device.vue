@@ -94,7 +94,7 @@
         },
         data(){
             return{
-                visible:true,
+                visible:false,
                 type:null,//设备类型
                 ptType:null,//设备类型
                 props:false,
@@ -143,7 +143,7 @@
                 }
             },
             radius(){
-                return Math.abs(this.ptType&&this.ptType.value*Math.cos(this.degree))
+                return Math.abs(this.ptType&&this.ptType.value*Math.cos(this.degree)).toFixed(2)+'m'
             }
         },
 

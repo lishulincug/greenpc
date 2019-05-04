@@ -19,20 +19,26 @@
            Bus.$on('measure',this.initMeasure);
            Bus.$on('scale',this.addScale);
            Bus.$on('minimap',this.addMinimap);
-           Bus.$on('reset',this.reset);
+           Bus.$on('resetPosition',this.reset);
            Bus.$on('clear',this.clear);
+           Bus.$on('addTree',this.addTree);
+           Bus.$on('commit',this.commit);
+
+           Bus.$on('chooseFeature',this.chooseFeature);
 
             /*******************************/
-             Bus.$on('query',function (d) {
+             Bus.$on('query',d =>{
                  this.queryBySql(d.value)
-             }.bind(this));
+             });
 
-             Bus.$on('queryByGeo',function (d) {
-                 this.querygeo(d.value)
-             }.bind(this));
-             Bus.$on('queryByBuffer',function (d) {
-                 this.querybuffer(d.value)
-             }.bind(this));
+             Bus.$on('queryByGeo', (d)=> {
+                 this.queryByGeos(d)
+             });
+
+             Bus.$on('queryByBuffer',d=> {
+                 this.queryByGeos(d)
+             });
+
             this.map.on(L.Draw.Event.CREATED, this.draw);
          },
         data:function(){
@@ -69,30 +75,62 @@
                       }
                       else if (feature.properties.MAN_NAME){
                           t=`姓名 ${feature.properties.MAN_NAME}<br/>`+`角色 ${feature.properties.ROLE}<br/>`+`所属区 ${feature.properties.所属区}区<br/>`+`手机 ${feature.properties.手机}<br/>`
-                      }else  if (feature.properties.类型){
-                          t="编号" + feature.properties.编号+"<br/>"+"名称" + feature.properties.名称+"<br/>"+"类型" + feature.properties.类型+"<br/>"+"种植时间" + feature.properties.种植时间
+                      }else  if (feature.properties.COL2.indexOf('乔木')>-1||feature.properties.COL2.indexOf('灌木')>-1){
+                        let o={}
+                        if (feature.properties.COL1!==''){
+                          for(let i in feature.properties){
+                            if (i.indexOf('COL')>-1) {
+                                 if (feature.properties[i]===''){
+                                   feature.properties[i]=Tester.getRandomId('T')
+                                 }
+                               t += Tester.TreeMap(i) + '：' + feature.properties[i] + '<br>';
+                            }
+                          }
+                         } else{
+                           o=Tester.getTreeData(feature.properties)
+                          for(let i in o){
+                            t+=i+'：'+o[i]+'<br>';
+                          }
+                         }
+
+
                       }else{
-                          t=`编号 ${feature.properties.编号}<br/>`+`所属区 ${feature.properties.所属区}区`
+                          t=`编号 ${feature.properties.COL1}<br/>`+`所属区 ${feature.properties.COL2}区`
                       }
                       layer.bindPopup(t);
                       // if (this.result.feature.length==1){
                       //     this.flyTo(feature)
                       // }
-
                   }
               }).addTo(this.map);
+                if (this.queryParam.key.indexOf('delete')>-1){
+                  this.queryParam.deleteObj=[]
+                  this.result.features.map(e=>{
+                    this.queryParam.deleteObj.push(e.id)
+                  })
+
+                 }
           //    绘制结果
+             if (this.result.features.length==1){
+               let obj=this.result.features[0]
+// zoom the map to the polygon
+//                this.map.flyToBounds(L.polygon(obj.geometry.coordinates, {}).getBounds());
+
+
+             }
+
               this.result.features.map(e=>{
                   if(e.properties.MAN_NAME){
                         this.loadMan(e);
                   }
-                  if(e.properties.类型.indexOf('乔木')>-1){
+                  if(e.properties.COL2.indexOf('乔木')>-1){
                       this.loadQm(e);
                   }
-                  if(e.properties.类型.indexOf('灌木')>-1){
+                  if(e.properties.COL2.indexOf('灌木')>-1){
                       this.loadGm(e);
                   }
               })
+
           }
         },
          methods:{
@@ -100,6 +138,7 @@
               'setQueryParam',
              ]),
              //////////////////////////////////////////////////////////
+
              query(){
                  this.queryByIds([246, 247])
              },
@@ -143,40 +182,56 @@
                      })
                  }).addTo(this.map);
              },
+             addTree(item){
+               this.setQueryParam(item)
+               this.addQueryControl(item.s)
+             },
+             chooseFeature(item){
+               this.setQueryParam(item)
+               this.addQueryControl(item.s)
+             },
 
-             querygeo(item){
-                 var options = {
-                     position: 'topleft',
-                     draw: {
-                         polyline: false,
-                         polygon: true,
-                         circle: false,
-                         marker: false,
-                         rectangle:false,
-                         circlemarker:false,
-                     },
-                     edit: {
-                         featureGroup: this.editableLayers,
-                         remove: true
-                     }
-                 };
-                 if (this.queryControl){
-                     this.queryControl=null
-                 } else{
-                     this.queryControl = new L.Control.Draw(options);
-                     this.map.addControl(this.queryControl);
+             addQueryControl(s){
+               let [marker,polygon,polyline]=[false,false,false]
+               if (s==='p'){
+                 polygon=true
+               } else if (s==='l') {
+                 polyline=true
+               }else {
+                 marker=true
+               }
+               let options={
+                 position: 'topright',
+                 draw: {
+                   polyline: polyline,
+                   polygon: polygon,
+                   circle: false,
+                   marker: marker,
+                   rectangle: false,
+                   circlemarker: false,
+                 },
+                 edit: {
+                   featureGroup: this.editableLayers,
+                   remove: false
                  }
-                 this.map.on(L.Draw.Event.CREATED, function (e) {
-                     var type = e.layerType,
-                         layer = e.layer;
-                     if (type === 'polygon') {
-                         layer.bindPopup('A popup!');
-                     }
-                     this.editableLayers.addLayer(layer);
-                     let p=L.polygon(layer.editing.latlngs[0], {})
-                     item.p=p;
-                     this.queryBYGeos(item)
-                 }.bind(this));
+               };
+
+               if (this.queryControl){
+                 return;
+               } else{
+                 this.queryControl = new L.Control.Draw(options);
+                 this.map.addControl(this.queryControl);
+               }
+             },
+
+
+             queryByGeos(item){
+                 if (item.value.type==='queryByBuffer'){
+                   this.addQueryControl('l')
+                 } else{
+                   this.addQueryControl('p')
+                 }
+                 this.setQueryParam(item)
              },
              flyTo(e){
                  let o=e.geometry.coordinates
@@ -185,42 +240,9 @@
                      this.map.setZoom(this.option.option.zoom+4)
                  },1200)
              },
-             querybuffer(item){
-                 var options = {
-                     position: 'topleft',
-                     draw: {
-                         polyline: true,
-                         polygon: false,
-                         circle: false,
-                         marker: false,
-                         rectangle:false,
-                         circlemarker:false,
-                     },
-                     edit: {
-                         featureGroup: this.editableLayers,
-                         remove: true
-                     }
-                 };
-                 if (this.queryControl){
 
-                     this.queryControl=null
 
-                 } else{
-                     this.queryControl = new L.Control.Draw(options);
-                     this.map.addControl(this.queryControl);
-                 }
-                 this.map.on(L.Draw.Event.CREATED, function (e) {
-                     var type = e.layerType,
-                         layer = e.layer;
-                     if (type === 'polygon') {
-                         layer.bindPopup('A popup!');
-                     }
-                     this.editableLayers.addLayer(layer);
-                     let p=L.polygon(layer.editing.latlngs[0], {})
-                     item.p=p;
-                     this.queryByBuffer(item)
-                 }.bind(this));
-             },
+
 
              ///////////////////////////////////////////////////////////////////////////
            init() {
@@ -271,11 +293,120 @@
                   this.getArea(p)
                 }
               }
+              if (this.queryParam.key==='query'){
+                let item=this.queryParam
+                let value=item.value
+
+
+                if (type==='polygon'){
+                  value.p= L.polygon(layer.editing.latlngs[0],  {color: 'blue'}).addTo(this.map)
+                }
+
+                if (type==='polyline'){
+                  value.p= L.polyline(layer.editing.latlngs[0], {color: 'blue'}).addTo(this.map)
+                }
+                if (value.type==='queryByBuffer'){
+                  this.queryByBuffer(value)
+                } else{
+                  this.queryBYGeos(value)
+                }
+
+              }
+
+
+              if (this.queryParam.key.indexOf('edit')>-1){
+                if (type === 'marker') {
+                  let m=layer._latlng
+                  let p=L.marker([m.lat,m.lng],{
+                    icon:L.icon({
+                      iconUrl: '../../../static/img/redmarker.png',
+                      iconSize: [30, 40],
+                    })
+                  }).addTo(this.map);
+                  this.queryParam.p=p;
+                }
+                if (type==='polygon'){
+                  this.queryParam.value.p= L.polygon(layer.editing.latlngs[0],  {color: 'blue'}).addTo(this.map)
+                  this.queryBYGeos(this.queryParam.value)
+
+                }
+                setTimeout(e=>{
+                  Bus.$emit('在线编辑')
+                  this.removeDrawControl()
+                },700)
+              }
 
             },
+           removeDrawControl(){
+             this.queryControl&&this.map.removeControl(this.queryControl);
+             this.queryControl=null
+           },
+           commit(item){
+
+             let marker=this.queryParam.p;
+             let ids=[],markers=[]
+             if (this.queryParam.deleteObj&&this.queryParam.deleteObj.length>0){
+               ids=this.queryParam.deleteObj
+             }
+             // if (this.currentResult&&this.currentResult.features&&this.currentResult.features.length>0){
+             //   this.currentResult.features.map(e=>{
+             //     markers.push(L.polygon(e.geometry.coordinates, {}))
+             //     ids.push(e.id)
+             //   })
+             //   markers.map(e=>{
+             //     e=e.toGeoJSON();
+             //     e.properties = queryParam.properties;
+             //   })
+             //
+             // }else{
+             //
+             // }
+             if(item.action!=='delete'){
+               marker = marker&& marker.toGeoJSON();
+               marker.properties =item.obj
+             }
+
+
+             let EditFeaturesParameters={
+               dataSourceName: db.dataSourceName,
+               dataSetName: item.ds,
+               editType: item.action,
+               returnContent: true,
+             }
+
+
+             if (item.action==='add') {
+               EditFeaturesParameters.features= marker
+             }
+             if (item.action==='update'){
+               EditFeaturesParameters.IDs=ids
+               EditFeaturesParameters.features= markers
+             }
+             if(item.action==='delete'){
+               EditFeaturesParameters.IDs=ids
+             }
+
+             var addFeatureParams = new SuperMap.EditFeaturesParameters(EditFeaturesParameters);
+
+             L.supermap.featureService(this.option.dataUrl).editFeatures(addFeatureParams, serviceResult=> {
+               if (serviceResult.result&&serviceResult.result.succeed) {
+               alert(`操作成功！`);
+
+               }else{
+                 alert(`操作失败！`);
+
+               }
+             });
+
+             ids=[]
+             markers=[]
+             this.clear()
+
+           },
              clear(){
 
                  this.queryControl&&this.map.removeControl(this.queryControl);
+                 this.queryControl=null
                   this.editableLayers.clearLayers();
                  this.map.eachLayer(function(layer){
                      if(!layer._layerUrl){
@@ -304,7 +435,6 @@
               this.map.removeControl(this.drawControl)
             },
             reset(){
-
               this.map.flyTo(this.option.option.center)
               setTimeout(e=>{
                   this.map.setZoom(this.option.option.zoom)
@@ -360,7 +490,8 @@
                          name: `${db.dataSetName}@${item.ds}`,
                          attributeFilter: item.attr
                      },
-                     datasetNames: [`${db.dataSourceName}:${item.ds}`]
+                     datasetNames: [`${db.dataSourceName}:${item.ds}`],
+                     toIndex:1000,
                  });
                       // 创建SQL查询实例
                  L.supermap.featureService(this.option.dataUrl).getFeaturesBySQL(sqlParam,function (serviceResult) {
@@ -379,9 +510,12 @@
                          name: `${db.dataSetName}@${item.ds}`,
                          attributeFilter: item.attr
                      },
+                     attributeFilter: item.attr,
                      datasetNames: [`${db.dataSourceName}:${item.ds}`],
                      geometry: item.p,
+                     toIndex:1000,
                      spatialQueryMode: "INTERSECT" // 相交空间查询模式
+
                  });
 // 创建任意几何范围查询实例
                  L.supermap .featureService(this.option.dataUrl) .getFeaturesByGeometry(geometryParam,function (serviceResult) {
@@ -390,15 +524,19 @@
                      this.setFeatures(featuers)
                  }.bind(this));
              },
+
              queryByBuffer(item){
                  let length=prompt('请输入缓冲距离[单位:米]','');
                  if (length===''){
                      return;
                  }
+
                  var bufferParam = new SuperMap.GetFeaturesByBufferParameters({
                      datasetNames:  [`${db.dataSourceName}:${item.ds}`],
                      bufferDistance: length,
-                     geometry: item.p
+                     geometry: item.p,
+                     attributeFilter:item.attr,
+                     toIndex:1000,
                  });
                  L.supermap
                      .featureService(this.option.dataUrl)
@@ -407,7 +545,41 @@
                          if (featuers)
                          this.setFeatures(featuers)
                      }.bind(this));
+
              },
+            //缓冲区分析
+            bufferAnalysis(item){
+              let bufferAnalystService = L.supermap.spatialAnalystService(this.option.spatialanalystUrl);
+               //对生成的线路进行缓冲区分析
+              let geoBufferAnalystParams = new SuperMap.GeometryBufferAnalystParameters({
+                 sourceGeometry: item.p,
+                 bufferSetting: new SuperMap.BufferSetting({
+                   endType: SuperMap.BufferEndType.ROUND,
+                   leftDistance: new SuperMap.BufferDistance({value: 250}),
+                   rightDistance: new SuperMap.BufferDistance({value: 250}),
+                   semicircleLineSegment: 10
+                 })
+               });
+               bufferAnalystService.bufferAnalysis(geoBufferAnalystParams, function (serviceResult) {
+                 resultLayer = L.geoJSON(serviceResult.result.resultGeometry).addTo(map);
+                 //查询出缓冲区内信号影响范围内的工厂
+                 queryService = L.supermap.queryService(this.option.url);
+
+                 queryByGeometryParameters = new SuperMap.QueryByGeometryParameters({
+                   queryParams: [new SuperMap.FilterParameter({name:`${db.dataSetName}@${item.ds}`, })],
+                   geometry: resultLayer,
+                   spatialQueryMode: SuperMap.SpatialQueryMode.INTERSECT
+                 });
+                 queryService.queryByGeometry(queryByGeometryParameters, function (serviceResult) {
+                   // var result = serviceResult.result;
+                   //
+                   // resultLayer1 = L.geoJSON(result.recordsets[0].features).addTo(map);
+                   var featuers =serviceResult.result&& serviceResult.result.features;
+                           if (featuers)
+                           this.setFeatures(featuers)
+                 });
+               });
+            },
          //    查询
              queryQuyu(item){
                  this.queryBySql(item)

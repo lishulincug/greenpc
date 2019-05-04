@@ -6,13 +6,15 @@ import router from './router'
 import store from './store'
 import 'animate.css';
 import iView from 'iview'
+import Tester from './components/common/Tester'
+import echarts from 'echarts'
 
+window.echarts = echarts
 Vue.use(iView)
 Vue.config.productionTip = false
-
-
 /* eslint-disable no-new */
 window.Bus=new Vue()
+window.Tester=Tester
 new Vue({
   el: '#app',
   router,

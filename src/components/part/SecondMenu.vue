@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-show="visible">
       <ul class="list-group">
         <li class="list-group-item" v-for="(item,i) in list" @click="select(item,i)" :class="key==i?'height':'normal'">
           {{item.name}}
@@ -13,19 +13,37 @@
 
     export default {
         name: "SecondMenu",
-       props:{
-          list:Array,
-       },
+
        data:function(){
           return{
             key:null,
+            isFull:false,
+            list:[],
+            visible:false,
           }
        },
+      mounted(){
+        Bus.$on('showMenu',e=>{
+          if (Array.isArray(e)&&e.length>0){
+            this.list=e
+            this.visible=!this.visible
+          }
+        })
+      },
        methods:{
 
           select:function (item,i) {
              this.key=i
-             Bus.$emit(item.event)
+
+            if (item.event.indexOf('full')>-1){
+              this.isFull=!this.isFull
+               Bus.$emit(item.event,{
+                 fullScreen:this.isFull
+               })
+
+             }else{
+               Bus.$emit(item.event)
+             }
               /*switch (item.name) {
                case '比例尺':
                  map.addScale()
@@ -52,9 +70,7 @@
           }
        },
       computed:{
-        items(){
-          return this.$store.state.SecondMenuList
-        }
+
       },
       watch:{
         items(){

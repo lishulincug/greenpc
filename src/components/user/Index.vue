@@ -1,7 +1,7 @@
 <template>
-  <div :class="$style.root">
+  <div :class="$style.root" >
      <Head :class="$style.item" :nav="nav" :title="title" ></Head>
-      <Map :class="$style.item" :option="map" ref="map" :db="dbConfig"></Map>
+      <Map :class="$style.item" :style="style" :option="map" ref="map" :db="dbConfig"></Map>
       <SecondMenu :class="$style.SecondMenu"></SecondMenu>
       <Center :class="$style.center" :user="user"></Center>
       <Query :class="$style.query" :queryO="query" ref="query"></Query>
@@ -11,6 +11,8 @@
       <MapTool :class="$style.MapTool"></MapTool>
       <DataManager :class="$style.DataManager" :option="dataManager"></DataManager>
       <Device :class="$style.Device" :option="device"></Device>
+      <FullWindow></FullWindow>
+    <Chart :class="$style.Chart"></Chart>
   </div>
 </template>
 
@@ -25,16 +27,18 @@
    import AreaStatistics from '../part/AreaStatistics'
    import BchFZ from '../part/BchFZ'
    import Device from '../part/Device'
+   import Chart from '../part/Chart'
    import MapTool from '../toolbar/MapTool'
    import Center from '../user/Center'
    import db from '../config/db'
+   import FullWindow from '../common/FullWindow'
     export default {
         name: "Index",
         components:{
           SecondMenu,
           Head,
           Map,
-          MapTool,Center,Query,DispatchTask,AreaStatistics,BchFZ,DataManager,Device
+          MapTool,Center,Query,DispatchTask,AreaStatistics,BchFZ,DataManager,Device,FullWindow,Chart
         },
         data:function () {
          return{
@@ -51,6 +55,11 @@
          }
         },
         computed:{
+          style(){
+            return {
+              height:document.documentElement.clientHeight*0.93+'px'
+            }
+          },
           user(){
             return this.$store.state.user
           },
@@ -97,7 +106,7 @@
 
      /*pointer-events: none;*/
    }
-     .SecondMenu,.maptool,.center,.query,.DispatchTask,.AreaStatistics,.BchFZ,.MapTool,.DataManager,.Device{
+     .SecondMenu,.maptool,.center,.query,.DispatchTask,.AreaStatistics,.BchFZ,.MapTool,.DataManager,.Device,.Chart{
          position: absolute;
          z-index: 999;
      }
@@ -125,7 +134,7 @@
          left:35%;
          top:20%
      }
-     .AreaStatistics,.Device{
+     .AreaStatistics,.Device,.DataManager{
          right:1%;
          top:12%
      }
@@ -138,9 +147,10 @@
          left:91%;
          top:80%
      }
-     .DataManager{
-         left:36%;
-         top:22%
+     .Chart{
+         left:0%;
+         bottom:1%
+
      }
  }
 </style>

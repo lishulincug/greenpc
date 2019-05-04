@@ -53,17 +53,7 @@
 
             </div>
         </div>
-    <div >
-       <!-- <div :class="$style.head">
 
-        </div>
-
-
-        <div :class="$style.foot">
-
-        </div>-->
-
-    </div>
     </transition>
 </template>
 
