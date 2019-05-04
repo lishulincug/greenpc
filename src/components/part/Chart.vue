@@ -32,7 +32,7 @@
         },
         data(){
             return{
-                visible:true,
+                visible:false,
                 options:{},
                  myChart:{}
             }
@@ -98,7 +98,9 @@
                 this.visible=false
                 this.$store.commit('setShowAreaStatistics',false)
             },
-            restore(obj){
+            restore(){
+              let obj=this.$store.state.chartData;
+              this.visible=true
               this.myChart.clear()
               this.options.legend.data=obj.legendData
               this.options.series[0].data=obj.seriesData
@@ -109,7 +111,6 @@
               this.options.series[0].data=obj.seriesData1
               this.options.title.text=obj.text1;
               this.myChart.setOption(this.options,true)
-
             }
         },
 
@@ -117,7 +118,7 @@
           chartData : {
             deep: true,
             handler: function (newVal, oldVal) {
-              this.restore()
+               // this.restore()
             }
           }
         }

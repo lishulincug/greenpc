@@ -5,7 +5,7 @@
       <SecondMenu :class="$style.SecondMenu"></SecondMenu>
       <Center :class="$style.center" :user="user"></Center>
       <Query :class="$style.query" :queryO="query" ref="query"></Query>
-     <DispatchTask :class="$style.DispatchTask" :dispatch="dispatch" ></DispatchTask>
+      <DispatchTask :class="$style.DispatchTask" :dispatch="dispatch" ></DispatchTask>
       <AreaStatistics :class="$style.AreaStatistics" :option="statistics" ></AreaStatistics>
       <BchFZ :class="$style.BchFZ" :bch="bch"></BchFZ>
       <MapTool :class="$style.MapTool"></MapTool>
@@ -138,6 +138,10 @@
          right:1%;
          top:12%
      }
+   .AreaStatistics{
+     right: 3%;
+     top: 8.5%;
+   }
      .BchFZ{
          width: 50%;
          left:30%;

@@ -23,7 +23,7 @@
            Bus.$on('clear',this.clear);
            Bus.$on('addTree',this.addTree);
            Bus.$on('commit',this.commit);
-
+           Bus.$on('queryQu',this.queryQu);
            Bus.$on('chooseFeature',this.chooseFeature);
 
             /*******************************/
@@ -48,16 +48,22 @@
             scale:null,
             minimap:null,
             editableLayers:null,
-            drawControl:null,
+             drawControl:null,
               queryControl:null,
+              statistic:{
+               cnum:0,
+               qnum:0,
+               gnum:0,
+               pnum:0,
+              }
           }
         },
         computed:{
             ...mapState(
                 {
-                    'result':'features',
+                     'result':'features',
                      'queryParam':'queryParam',
-
+                     'chartData':'chartData'
                 }
             )
         },
@@ -73,6 +79,7 @@
                       if (feature.properties.NAME){
                           t="当前位置 " + feature.properties.NAME
                       }
+
                       else if (feature.properties.MAN_NAME){
                           t=`姓名 ${feature.properties.MAN_NAME}<br/>`+`角色 ${feature.properties.ROLE}<br/>`+`所属区 ${feature.properties.所属区}区<br/>`+`手机 ${feature.properties.手机}<br/>`
                       }else  if (feature.properties.COL2.indexOf('乔木')>-1||feature.properties.COL2.indexOf('灌木')>-1){
@@ -92,8 +99,6 @@
                             t+=i+'：'+o[i]+'<br>';
                           }
                          }
-
-
                       }else{
                           t=`编号 ${feature.properties.COL1}<br/>`+`所属区 ${feature.properties.COL2}区`
                       }
@@ -103,7 +108,7 @@
                       // }
                   }
               }).addTo(this.map);
-                if (this.queryParam.key.indexOf('delete')>-1){
+                if (this.queryParam.key&&this.queryParam.key.indexOf('delete')>-1){
                   this.queryParam.deleteObj=[]
                   this.result.features.map(e=>{
                     this.queryParam.deleteObj.push(e.id)
@@ -115,32 +120,110 @@
                let obj=this.result.features[0]
 // zoom the map to the polygon
 //                this.map.flyToBounds(L.polygon(obj.geometry.coordinates, {}).getBounds());
+              }
+
+            if (that.queryParam.value&&that.queryParam.value.type&&that.queryParam.value.type.indexOf('queryMarker')>-1){
+              // let jb=[]
+
+              let c=(this.result.features[0].geometry.coordinates[0][0]).map(e=>[e[1],e[0]])
+
+              let p=L.polygon([c], {color:'red'}).addTo(that.map);
+                 this.chartData.quyu=this.result.features[0].properties.NAME
+
+                this.$store.commit('setChartData',this.chartData)
+
+                 this.queryBYGeos({
+                  p:p,
+                  ds:'caoping',
+                  attr:'1=1'
+                });
 
 
-             }
+              that.queryBYGeos({
+                p:p,
+                ds:'tree',
+                attr:`COL2=='灌木'`
+              });
+              this.queryBYGeos({
+                p:p,
+                ds:'tree',
+                attr:`COL2=='乔木'`
+              });
 
+              that.setQueryParam({})
+              setTimeout(e=>{
+                Bus.$emit('restore')
+              },2000)
+            }
+
+
+              let cnum=0,gnum=0,qnum=0,quyu=0;
               this.result.features.map(e=>{
+
                   if(e.properties.MAN_NAME){
                         this.loadMan(e);
+                    this.statistic.pnum++;
                   }
-                  if(e.properties.COL2.indexOf('乔木')>-1){
+                  if(e.properties.COL2&&e.properties.COL2.indexOf('乔木')>-1){
                       this.loadQm(e);
+                    this.statistic.qnum++
                   }
-                  if(e.properties.COL2.indexOf('灌木')>-1){
+                  if(e.properties.COL2&&e.properties.COL2.indexOf('灌木')>-1){
                       this.loadGm(e);
+                    this.statistic.gnum++
                   }
-              })
+                  if (!e.properties.NAME&&e.geometry.coordinates){
+                    this.statistic.cnum++
+                  }
+
+
+
+               });
+            this.chartData.statistic=this.statistic
+
+            this.$store.commit('setChartData',this.chartData)
+
+
+            // Bus.$emit('restore',{
+            //   text:'植被数目统计',
+            //   legendData:['乔木','灌木'],
+            //   seriesData:[{
+            //     name:'乔木',
+            //     value:qnum
+            //   },{
+            //     name:'灌木',value:gnum
+            //   }],
+            //   text1:'草地面积统计',
+            //   legendData1:['草坪','其它'],
+            //   seriesData1:[{
+            //    name: '草地',value:cnum,
+            //   },{
+            //     name:'其它',
+            //     value:478159.417938201-cnum
+            //   }]
+            // });
+
+
+
+
 
           }
         },
          methods:{
-             ...mapMutations(['setFeatures','clearFeatures',
-              'setQueryParam',
+             ...mapMutations([
+               'setFeatures','clearFeatures',
+              'setQueryParam',' setChartData'
              ]),
              //////////////////////////////////////////////////////////
 
              query(){
                  this.queryByIds([246, 247])
+             },
+             queryQu(item){
+
+               this.setQueryParam(item)
+
+               this.addQueryControl('m')
              },
              loadMan(e){
                  let o=e.geometry.coordinates
@@ -157,7 +240,7 @@
                  let o=e.geometry.coordinates
                  L.marker([o[1],o[0]],{
                      icon:L.icon({
-                         iconUrl: '../../../static/img/gm.png',
+                         iconUrl: '../../../static/img/qm.png',
                          iconSize: [40, 40],
                          iconAnchor: [40, 44],
                          // popupAnchor: [-20, 0],
@@ -305,11 +388,18 @@
                 if (type==='polyline'){
                   value.p= L.polyline(layer.editing.latlngs[0], {color: 'blue'}).addTo(this.map)
                 }
+
                 if (value.type==='queryByBuffer'){
                   this.queryByBuffer(value)
-                } else{
+                } if (value.type===`queryByGeo`) {
                   this.queryBYGeos(value)
                 }
+                if (value.type===`queryMarker`){
+                  let m=layer._latlng
+                  this.queryParam.value.p=L.marker([m.lat,m.lng],{});
+                  this.queryBYGeos(this.queryParam.value)
+                }
+
 
               }
 
@@ -515,12 +605,12 @@
                      geometry: item.p,
                      toIndex:1000,
                      spatialQueryMode: "INTERSECT" // 相交空间查询模式
-
                  });
 // 创建任意几何范围查询实例
                  L.supermap .featureService(this.option.dataUrl) .getFeaturesByGeometry(geometryParam,function (serviceResult) {
                      // 获取服务器返回的结果
-                     var featuers = serviceResult.result.features;
+                     var featuers = serviceResult.result&& serviceResult.result.features;
+                     if (featuers)
                      this.setFeatures(featuers)
                  }.bind(this));
              },

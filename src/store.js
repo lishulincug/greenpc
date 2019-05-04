@@ -22,7 +22,15 @@ export default new Vuex.Store({
       showAreaStatistics:false,
       showBch:false,
       queryParam:{},
-      chartData:{}
+      chartData:{
+       text:'',
+        text1:'',
+        legendData:[],
+        legendData1:[],
+        seriesData:[],
+        seriesData1:[],
+        statistic:{}
+      }
   },
   mutations:{
       setQueryParam(state,v){
