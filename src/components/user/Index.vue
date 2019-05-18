@@ -1,4 +1,3 @@
-<script src="../../common/api.js"></script>
 <template>
   <div :class="$style.root" >
      <Head :class="$style.item" :nav="nav" :title="title" ></Head>
@@ -38,7 +37,7 @@
    import db from '../config/db'
    import FullWindow from '../common/FullWindow'
    import {mapMutations,mapState} from 'vuex'
-   import {findAllUser} from '../../common/api'
+   import {findAllUser,getMessage} from '../../common/api'
     export default {
         name: "Index",
         components:{
@@ -57,7 +56,7 @@
              query:config.query,
              dispatch:config.dispatchTask,
              statistics:config.AreaStatistics,
-             bch:config.bch,
+             bch:config.bchFZ,
              dataManager: config.dataManager,
              device:config.device,
          }
@@ -77,9 +76,10 @@
         },
         mounted() {
         //      请求用户数据
-            this.initUserManager()
-            Bus.$on('initUserManager',this.initUserManager)
-
+             this.initUserManager()
+             Bus.$on('initUserManager',this.initUserManager)
+             this.initMessage()
+             Bus.$on('getMessage',this.initMessage)
 
           },
            methods:{
@@ -93,6 +93,14 @@
                  }
              })
            },
+            //获取消息
+            initMessage(){
+             getMessage().then(e=>{
+               this.$store.commit('setMessage',e.data)
+             },e=>{
+              this.$Message.info('读取信息错误！');
+             })
+            },
 
           control(i){
             switch (Number.parseInt(i)) {

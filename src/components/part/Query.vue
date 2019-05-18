@@ -26,7 +26,7 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <input type="text" class="form-control" id="exampleInputPassword1"  v-model="ID" placeholder="请输入ID">
+                    <input type="text" class="form-control" id="exampleInputPassword1"  v-model="ID" placeholder="请输入ID/名称">
                 </div>
                 <hr>
                 <div class="form-group " v-show="more">
@@ -166,7 +166,12 @@
                       if (this.ID===''){
                         attr="col2 like '%"+this.l3Value+"%'"
                       } else{
-                        attr="SmID =='"+(this.ID.substr(1,this.ID.length))+"'"
+                          if (this.ID.length<4){
+                              attr=`COL1=='${this.ID}'`
+                          }else{
+                              attr="SmID =='"+(this.ID.substr(1,this.ID.length))+"'"
+                          }
+
                       }
 
                     }

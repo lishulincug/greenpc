@@ -31,14 +31,13 @@
            Bus.$on('findDot',this.findDot);
            Bus.$on('queryZhiBei',this.queryZhiBei);
            Bus.$on('drawDevicePoint',this.drawDevicePoint);
-             Bus.$on('loadHeatMap',this.loadHeatMap);
+           Bus.$on('loadHeatMap',this.loadHeatMap);
 
+           Bus.$on('showMessage',this.showMessage);
             /*******************************/
              Bus.$on('query',d =>{
                  this.queryBySql(d.value)
              });
-
-
              Bus.$on('queryByGeo', (d)=> {
                  this.queryByGeos(d)
              });
@@ -48,6 +47,11 @@
              });
 
             this.map.on(L.Draw.Event.CREATED, this.draw);
+            this.map.on('move',e=>{
+              Bus.$emit('getMessage')
+              this.$store.commit('setMapCenter',this.map.getCenter())
+            })
+
          },
         data:function(){
           return{
@@ -135,9 +139,9 @@
             if (that.queryParam.value&&that.queryParam.value.type&&that.queryParam.value.type.indexOf('queryMarker')>-1){
               // let jb=[]
 
-              let c=(this.result.features[0].geometry.coordinates[0][0]).map(e=>[e[1],e[0]])
+               let c=(this.result.features[0].geometry.coordinates[0][0]).map(e=>[e[1],e[0]])
 
-              let p=L.polygon([c], {color:'red'}).addTo(that.map);
+               let p=L.polygon([c], {color:'red'}).addTo(that.map);
                  this.chartData.quyu=this.result.features[0].properties.NAME
 
                 this.$store.commit('setChartData',this.chartData)
@@ -575,6 +579,24 @@
              this.clear()
 
            },
+           showMessage(m){
+
+               let c=m.position.split(',')
+             let content=`内容:${m.content}<br>
+             上报人:${m.user}<br>
+             时间:${m.time}`
+
+             let p=L.marker(c,{
+               icon:L.icon({
+                 iconUrl: 'static/img/redmarker.png',
+                 iconSize: [30, 40],
+               })
+             }).addTo(this.map) .bindPopup(content).openPopup()
+             let i=this.$store.state.message.findIndex(e=>e.user===c.user)
+             this.$store.state.message.splice(i,1)
+
+
+           },
            drawDevicePoint(){
                this.filterDevicePoint()
                if (!this.devicePoint){
@@ -634,7 +656,7 @@
              },
              //热力图
              loadHeatMap(heatNumbers = 150,heatRadius = 30) {
-
+                    this.clear()
                     let num = parseInt(heatNumbers);
                     num = (num > 0) ? num : 0;
                     let radius = parseInt(heatRadius);
@@ -642,10 +664,10 @@
                     let heatPoints = [];
                     for (var i = 0; i < num; i++) {
 
-                        heatPoints[i] = [Math.random() * 0.28 + 39.78, Math.random() * 0.5 + 4342564.64, Math.random() * 80+506077.42];
+                        heatPoints[i] = [ Math.random() * 1157 + 4340357.591695437, Math.random() *1772+506482.3477672013];
                     }
-                    console.log( L)
-                    let headMapLayer = new L.supermap.heatMapLayer(heatPoints, {
+
+                    let headMapLayer =L.heatLayer(heatPoints, {
                         radius: radius,
                         minOpacity: 0.5
                     }).addTo(this.map);

@@ -2,7 +2,7 @@
 
     <div v-show="visible" class="root">
 
-        <Card style="width:550px;background-color: whitesmoke; position: absolute;left:30%;top:40%" >
+        <Card style="width:550px;background-color: whitesmoke; position: absolute;left:40%;top:40%" >
         <mt-spinner  size="100" color="lightgreen" type="triple-bounce"></mt-spinner>
             <CellGroup>
                 <Cell :title="text" ></Cell>

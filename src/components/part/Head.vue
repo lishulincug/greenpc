@@ -1,7 +1,8 @@
 <template>
     <div :class="$style.root" >
       <div class="panel panel-default">
-        <div class="panel-body" style="background: url('static/img/bg.jpg') repeat">
+<!--          background: url('static/img/bg.jpg') repeat-->
+        <div class="panel-body" style="background-color: forestgreen">
              <div :class="$style.con">
                   <div :class="$style.item">
                       <p :class="$style.title">

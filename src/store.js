@@ -42,16 +42,23 @@ export default new Vuex.Store({
 
       },
       devicePoint:{},
-      devicePoints:[]
+      devicePoints:[],
+      message:[],
+      mapCenter:{}
   },
   mutations:{
       setCaopingList(state,value){
           state.caopingList=value;
       },
+      setMapCenter(state,value){
+          state. mapCenter=value;
+      },
       pushCaoping(state,v){
           state.caopingList.push(v);
       },
-
+      setMessage(state,v){
+          state.message=v;
+      },
       setWorklist(state,v){
           state.worklist=v;
       },

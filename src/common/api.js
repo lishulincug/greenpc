@@ -29,3 +29,12 @@ export const deleteUser=(data)=>{
 export const updateTask=(data)=>{
   return axios.get(url+`/work/updateWork?${data}`)
 }
+// 读取消息
+export const getMessage=(data)=>{
+  return axios.get(url+`/message/getMessage`)
+}
+//添加消息
+export const sendMessage=(data)=>{
+  return axios.get(url+`/message/addMessage?${data}`)
+}
+

@@ -15,6 +15,8 @@
      <Map class="map"  :option="map" ref="map" v-show="showMap" :db="dbConfig"></Map>
      <TaskList class="TaskList" v-show="showTask"></TaskList>
      <BchJl class="bch"></BchJl>
+        <Message class="Message"></Message>
+     <LaBa class="LaBa"></LaBa>
  </div>
 
 </template>
@@ -25,14 +27,15 @@
     import Header from '../part/Header'
     import TaskList from '../part/TaskList'
     import BchJl from '../box/BchJl'
-    import QueryForm from '../box/QueryForm'
+    import LaBa from '../box/LaBa'
     import InfoBox from '../box/InfoBox'
     import Work from '../box/Work'
     import Toolbar from '../toolbar/Toolbar'
-    import Info from '../box/Info'
+    import Message from '../part/Message'
     import Progress from '../box/Progress'
     import Map from '../map/Map'
     import db from '../config/db'
+
     import {findTask} from '../../common/api'
 
   export default {
@@ -54,7 +57,7 @@
     components:{
       // AppTab,SlideBar,QueryForm,BZ,CutForm,Caopinggg,Toolbar,InfoBox,Work,Progress,BchJl,
       //   Info,
-      AppTab,Toolbar,InfoBox,Work,Progress,Map,Header,TaskList,BchJl
+      AppTab,Toolbar,InfoBox,Work,Progress,Map,Header,TaskList,BchJl,Message,LaBa
       },
 
 
@@ -122,7 +125,7 @@
     .anchorBL{display:none;}
 
 
-    .menu,.cpMenu,.treeMenu,.bch{
+    .menu,.cpMenu,.treeMenu,.bch,.Message,.LaBa{
         position: absolute;
         left: 86%;
     }
@@ -154,4 +157,12 @@
         top:30%;
         z-index: 99;
     }
+  .Message{
+    left:10%;
+    top:40%;
+  }
+ .LaBa{
+  right: 0;
+  top: 80%;
+ }
 </style>
