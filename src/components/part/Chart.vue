@@ -29,6 +29,7 @@
           });
           Bus.$on('restore',this.restore);
           this.init()
+            fun.moveElement(this.$el)
         },
         data(){
             return{

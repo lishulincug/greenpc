@@ -45,10 +45,10 @@ export default {
           name:'比例尺',
             event:'scale',
         },
-        {
-          name:'地图鹰眼',
-            event:'minimap',
-        },
+        // {
+        //   name:'地图鹰眼',
+        //     event:'minimap',
+        // },
         {
           name:'地图复位',
             event:'resetPosition',
@@ -58,6 +58,10 @@ export default {
           event:'fullScreen',
         },
           {
+              name:'打印',
+              event:'print',
+          },
+          {
               name:'清除',
               event:'clear',
           }
@@ -65,7 +69,7 @@ export default {
     },
 
     {
-      name:'任务分发',
+      name:'任务分配',
       children:[
         /*{
           name:'数据检索',
@@ -93,14 +97,19 @@ export default {
           name:'病虫害防治',
           children:[
 
-              {
-                  name:'清除',
-              }
+
           ]
       },
 
       {
           name:'设备模拟',
+          children:[
+
+
+          ]
+      },
+      {
+          name:'用户管理',
           children:[
 
 
@@ -175,53 +184,86 @@ export default {
                 name:'一区',
                 children:[
                 ],
+                task:[],
                 checked:false
             },
             {
                 name:'二区',
                 children:[
                 ],
+                task:[],
                 checked:false
             },
             {
                 name:'三区',
                 children:[],
+                task:[],
                 checked:false
             },
             {
                 name:'四区',
                 children:[],
+                task:[],
                 checked:false
             },
             {
                 name:'五区',
                 children:[],
+                task:[],
                 checked:false
             },
             {
                 name:'六区',
                 children:[],
+                task:[],
                 checked:false
             },
             {
                 name:'七区',
                 children:[],
+                task:[],
                 checked:false
             },
 
         ],
         mans:[
             [
-              '张三',
-                '李四',
+                '李明',
+                '刘四',
                 '张五',
+                '张张',
+                '王五',
+                '张山',
+                '张三',
+                '李二',
+                '张六',
             ],
 
             [
-                '李二'
+                'rr',
+                'aa',
+                'bb',
+                'cc',
+                'dd',
+                'nn',
+                'mm',
+                'kk',
+                'jj',
+                'gg',
+                'ff',
+
             ],
             [
-                '3111'
+                '11',
+                '22',
+                '33',
+                '44',
+                '55',
+                '66',
+                '77',
+                '88',
+                '99',
+                '00',
             ],
         ],
     },
@@ -231,22 +273,22 @@ export default {
         list:[
             {
                 name:'草坪',
-                symbol:'../../../static/img/cp.png',
+                symbol:'static/img/cp.png',
                 count:0,
             },
             {
                 name:'乔木',
-                symbol:'../../../static/img/qm.png',
+                symbol:'static/img/qm.png',
                 count:0,
             },
             {
                 name:'灌木',
-                symbol:'../../../static/img/gm.png',
+                symbol:'static/img/gm.png',
                 count:0,
             },
             {
                 name:'养护员',
-                symbol:'../../../static/img/man.png',
+                symbol:'static/img/man.png',
                 count:0,
             },
         ]
@@ -263,7 +305,7 @@ export default {
                       防治措施:'措施',
                       发病期:'3~4月份',
                       防治周期:'',//防治周期,
-                      图片:'../../../static/img/man.png'
+                      图片:'../../assets/man.png'
                   }
               },
 
@@ -276,7 +318,7 @@ export default {
                       防治措施:'措施',
                       发病期:'3~4月份',
                       防治周期:'',//防治周期,
-                      图片:'../../../static/img/man.png'
+                      图片:'../../assets/man.png'
                   }
               },
           ]
@@ -297,7 +339,7 @@ export default {
                                       防治措施:'措施',
                                       发病期:'3~4月份',
                                       防治周期:'',//防治周期,
-                                      图片:'../../../static/img/man.png'
+                                      图片:'../../assets/man.png'
                                   }
                               },
                           ]
@@ -312,7 +354,7 @@ export default {
                                       防治措施:'措施',
                                       发病期:'3~4月份',
                                       防治周期:'',//防治周期,
-                                      图片:'../../../static/img/man.png'
+                                      图片:'../../assets/man.png'
                                   }
                               },
                           ]
@@ -332,7 +374,7 @@ export default {
                                       防治措施:'措施',
                                       发病期:'3~4月份',
                                       防治周期:'',//防治周期,
-                                      图片:'../../../static/img/man.png'
+                                      图片:'../../assets/man.png'
                                   }
                               },
                           ]
@@ -347,7 +389,7 @@ export default {
                                       method:'措施',
                                       bfq:'3~4月份',
                                       zhouqi:'',//防治周期,
-                                      pic:'../../../static/img/man.png'
+                                      pic:'../../assets/man.png'
                                   }
                               },
                           ]
@@ -415,6 +457,25 @@ export default {
               ]
           }
       ]
-    }
+    },
+    AppTab:[
+      {
+
+        name:'任务单',
+        event:'showTask',
+        img:'static/img/manager.png',
+      },
+
+      {
+        name:'病虫害',
+        event:'showBchJl',
+        img:'static/img/yuji.png',
+      },
+      // {
+      //   name:'',
+      //   event:'',
+      // },
+
+    ]
 
 }

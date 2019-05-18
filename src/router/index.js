@@ -2,7 +2,11 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/user/Login'
 import Index from '@/components/user/Index'
+import AppLogin from '@/components/user/AppLogin'
+import AppIndex from '@/components/user/AppIndex'
+
 Vue.use(Router)
+
 export default new Router({
   routes: [
     {
@@ -17,6 +21,16 @@ export default new Router({
     {
       path: '/index',
       component: Index
-    }
+    },
+    {
+      path: '/AppLogin',
+
+      component: AppLogin
+    },
+    {
+      path: '/AppIndex',
+      component: AppIndex
+    },
+   
   ]
 })

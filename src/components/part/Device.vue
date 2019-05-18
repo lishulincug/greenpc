@@ -20,9 +20,9 @@
                        </tr>
 
                         <tr v-show="props">
-                            <td>选择位置</td>
+                            <td>记录</td>
                             <td class="form-group">
-                                <span class="btn btn-default form-control">选点</span>
+                                <span >{{log?log:'暂无数据'}}</span>
                             </td>
                         </tr>
                         <tr v-show="props">
@@ -60,6 +60,15 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr v-show="props">
+                            <td>
+
+                            </td>
+                            <td>
+                                <button class="btn" @click="fixedPoint">确定</button>&nbsp;&nbsp;
+                                <button class="btn" @click="reset">重置</button>
+                            </td>
+                        </tr>
 
                     </table>
                 </div>
@@ -82,6 +91,7 @@
           Bus.$on('设备模拟',e=>{
               this.visible=!this.visible
           })
+            fun.moveElement(this.$el)
             this.type=this.option.types[0]
 
         },
@@ -90,6 +100,14 @@
                 if (o===''){
                     n=0;
                 }
+            },
+
+            radius(n,o){
+                let obj=Object.assign(this.$store.state.devicePoint,{
+                    radius:n.split('m')[0]
+                })
+                this.$store.commit('setDevicePoint',obj)
+                Bus.$emit('drawDevicePoint')
             }
         },
         data(){
@@ -101,6 +119,7 @@
                 degree:0,
 
                 num:0,
+                log:''
             }
         },
 
@@ -109,16 +128,34 @@
                 this.visible=false
 
             },
+
             selectType(){
                 let type=this.type
                 switch (type.name) {
                     case '喷灌设备':
                         this.props=!this.props
                         this.$Message.info('请选点')
+                        Bus.$emit('findDot')
+
                         break
                     default:
                         this.props=false
                 }
+            },
+            fixedPoint(){
+                  // this.$store.commit('setDevicePoints',[])
+                let {center,radius}=this.$store.state.devicePoint;
+                this.log=`
+                类型:${this.ptType.name}
+                位置:${center[0].toFixed(2)} ${center[1].toFixed(2)}
+                半径:${radius}
+                角度:${this.degree}`
+
+
+            },
+            reset(){
+                this.$store.commit('setDevicePoints',[])
+                this.$store.commit('setDevicePoint',{})
             },
             selectPtType(){
 

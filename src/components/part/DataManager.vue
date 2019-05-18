@@ -81,6 +81,7 @@
           })
             this.actionType=this.option.actions[0]
             this.featureType=this.option.features[0]
+            fun.moveElement(this.$el)
         },
         data(){
             return{

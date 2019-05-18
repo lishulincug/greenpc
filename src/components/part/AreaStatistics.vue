@@ -28,10 +28,11 @@
           Bus.$on('统计分析',e=>{
               this.visible=!this.visible
           })
+            fun.moveElement(this.$el)
         },
         data(){
             return{
-                visible:true,
+                visible:false,
                 list:this.option.list,
 
             }

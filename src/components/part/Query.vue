@@ -72,6 +72,7 @@
             Bus.$on('查询',e=>{
                 this.visible=!this.visible
             })
+            fun.moveElement(this.$el)
         },
         methods:{
             changeL1(){
@@ -114,14 +115,14 @@
                     ds='caoping'
                 }
 
-                Bus.$emit(key,{
-                    key:'query',
-                    value:{
-                        type:key,
-                        ds:ds,
-                        attr:attr
-                    }
-                })
+                    Bus.$emit(key,{
+                        key:'query',
+                        value:{
+                            type:key,
+                            ds:ds,
+                            attr:attr
+                        }
+                    })
                 this.close()
             },
 

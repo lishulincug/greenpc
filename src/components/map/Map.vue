@@ -24,12 +24,20 @@
            Bus.$on('addTree',this.addTree);
            Bus.$on('commit',this.commit);
            Bus.$on('queryQu',this.queryQu);
+
+           Bus.$on('print',this.print);
            Bus.$on('chooseFeature',this.chooseFeature);
+
+           Bus.$on('findDot',this.findDot);
+           Bus.$on('queryZhiBei',this.queryZhiBei);
+           Bus.$on('drawDevicePoint',this.drawDevicePoint);
+             Bus.$on('loadHeatMap',this.loadHeatMap);
 
             /*******************************/
              Bus.$on('query',d =>{
                  this.queryBySql(d.value)
              });
+
 
              Bus.$on('queryByGeo', (d)=> {
                  this.queryByGeos(d)
@@ -63,9 +71,11 @@
                 {
                      'result':'features',
                      'queryParam':'queryParam',
-                     'chartData':'chartData'
+                      'chartData':'chartData',
+                      'devicePoint':'devicePoint'
                 }
-            )
+            ),
+
         },
         watch:{
           result(){
@@ -156,6 +166,14 @@
               },2000)
             }
 
+            //植被编号查询
+            if (that.queryParam.value&&that.queryParam.value.type&&that.queryParam.value.type.indexOf('queryZhiBei')>-1){
+              that.setTaskList(that.result)
+              let id=this.queryParam.value.attr.split('=')[1]
+              let item=config.dispatchTask.quyu.find((e,i)=>i==id-1)
+              item.task=that.result.features.map(e=>e.properties.COL1)
+
+            }
 
               let cnum=0,gnum=0,qnum=0,quyu=0;
               this.result.features.map(e=>{
@@ -207,12 +225,16 @@
 
 
 
-          }
+          },
+
+
         },
+
          methods:{
              ...mapMutations([
                'setFeatures','clearFeatures',
-              'setQueryParam',' setChartData'
+              'setQueryParam',' setChartData','setTaskList','setDevicePoint',
+               'setDevicePoints','putDevicePoints','popDevicePoints'
              ]),
              //////////////////////////////////////////////////////////
 
@@ -229,18 +251,23 @@
                  let o=e.geometry.coordinates
                  L.marker([o[1],o[0]],{
                      icon:L.icon({
-                         iconUrl: '../../../static/img/man.png',
+                         iconUrl: 'static/img/man.png',
                          iconSize: [30, 30],
                          iconAnchor: [30, 34],
 
                      })
                  }).addTo(this.map);
              },
+             print(){
+               if (this.$el)
+               fun.printpage(this.$el)
+
+              },
              loadQm(e){
                  let o=e.geometry.coordinates
                  L.marker([o[1],o[0]],{
                      icon:L.icon({
-                         iconUrl: '../../../static/img/qm.png',
+                         iconUrl: 'static/img/qm.png',
                          iconSize: [40, 40],
                          iconAnchor: [40, 44],
                          // popupAnchor: [-20, 0],
@@ -255,7 +282,7 @@
 
                  L.marker([o[1],o[0]],{
                      icon:L.icon({
-                         iconUrl: '../../../static/img/gm.png',
+                         iconUrl: 'static/img/gm.png',
                          iconSize: [30, 30],
                          iconAnchor: [30, 34],
                          // popupAnchor: [-20, 0],
@@ -323,8 +350,11 @@
                      this.map.setZoom(this.option.option.zoom+4)
                  },1200)
              },
-
-
+             //任务分发 植被编号查询
+             queryZhiBei(d){
+                 this.setQueryParam(d);
+                 this.queryBySql(d.value)
+             },
 
 
              ///////////////////////////////////////////////////////////////////////////
@@ -354,9 +384,11 @@
                 },
                 edit: {
                   featureGroup: this.editableLayers,
-                  remove: true
+                  remove: false,
+                  edit:false
                 }
               };
+
               if (this.drawControl){
                   this.map.removeControl(this.drawControl);
                   this.drawControl=null
@@ -365,6 +397,38 @@
                 this.map.addControl(this.drawControl);
               }
             },
+           findDot(){
+               this.setQueryParam({
+                 key:'findDot'
+               });
+             if (this.drawControl){
+               this.map.removeControl(this.drawControl);
+               this.drawControl=null
+             } else{
+               let option=this.getDrawOption(true)
+               this.drawControl = new L.Control.Draw(option);
+               this.map.addControl(this.drawControl);
+             }
+           },
+           getDrawOption(marker=false,polyline=false,polygon=false,circle=false){
+             let option={
+               position: 'topleft',
+                       draw: {
+                       polyline: polyline,
+                       polygon: polygon,
+                       circle: circle,
+                       marker: marker,
+                       rectangle:false,
+                       circlemarker:false,
+             },
+               edit: {
+                 featureGroup: this.editableLayers,
+                         remove: false,
+                         edit:false
+               }
+             };
+             return option
+           },
             //绘制相关功能统一处理入口
             draw(e){
               var type = e.layerType,
@@ -409,7 +473,7 @@
                   let m=layer._latlng
                   let p=L.marker([m.lat,m.lng],{
                     icon:L.icon({
-                      iconUrl: '../../../static/img/redmarker.png',
+                      iconUrl: 'static/img/redmarker.png',
                       iconSize: [30, 40],
                     })
                   }).addTo(this.map);
@@ -425,7 +489,25 @@
                   this.removeDrawControl()
                 },700)
               }
+              //设备选点
+              if (this.queryParam.key.indexOf('findDot')>-1){
+                if (type === 'marker') {
 
+                  let m=layer._latlng
+                  let p=L.marker([m.lat,m.lng],{
+                    icon:L.icon({
+                      iconUrl: 'static/img/redmarker.png',
+                      iconSize: [30, 40],
+                    })
+                  }).addTo(this.map);
+                  this.queryParam.p=p;
+
+                  this.setDevicePoint({
+                     center:[m.lat,m.lng]
+                  });
+
+                }
+              }
             },
            removeDrawControl(){
              this.queryControl&&this.map.removeControl(this.queryControl);
@@ -493,6 +575,82 @@
              this.clear()
 
            },
+           drawDevicePoint(){
+               this.filterDevicePoint()
+               if (!this.devicePoint){
+                 return
+               }
+               let point=this.$store.state.devicePoint;
+               let last=null
+               if (this.$store.state.devicePoints.length>0){
+                   last=this.$store.state.devicePoints[this.$store.state.devicePoints.length-1];
+               }
+
+               if (last!=null&&last._latlng.lat==point.center[0]){
+
+                  this.map.eachLayer(e=>{
+                      if (e._latlng&&e._latlng.lat==last._latlng.lat)
+                          e.remove()
+                  })
+
+               }
+
+               let c=L.circle(point.center, {
+                 radius: Number.parseFloat(point.radius),
+                 fillColor:'blue',
+                 fillOpacity:'0.4'
+               }).addTo(this.map);
+
+               this.putDevicePoints(c)
+             // _leaflet_id _mRadius
+
+           },
+             //过滤设备点
+             filterDevicePoint(){
+               let devices=this.$store.state.devicePoints;
+
+               if (devices.length>0){
+                 this.map.eachLayer(e=>{
+                   if (!e._layerUrl){
+                     if (devices.indexOf(e)>0){
+                       let items=devices.filter((e1,index)=>e1._latlng.lat==e._latlng.lat&&index!=devices.length-1);
+                       items.forEach(layer=>{
+                         // layer.remove()
+                       })
+                     }
+                   }
+
+                 })
+               }
+               // if (devices.length>0){
+               //   let same=devices.filter(e=>{
+               //     let
+               //     devices.forEach(e1=>{
+               //
+               //      })
+               //   })
+               // }
+
+             },
+             //热力图
+             loadHeatMap(heatNumbers = 150,heatRadius = 30) {
+
+                    let num = parseInt(heatNumbers);
+                    num = (num > 0) ? num : 0;
+                    let radius = parseInt(heatRadius);
+                    radius = (radius > 0) ? radius : 0;
+                    let heatPoints = [];
+                    for (var i = 0; i < num; i++) {
+
+                        heatPoints[i] = [Math.random() * 0.28 + 39.78, Math.random() * 0.5 + 4342564.64, Math.random() * 80+506077.42];
+                    }
+                    console.log( L)
+                    let headMapLayer = new L.supermap.heatMapLayer(heatPoints, {
+                        radius: radius,
+                        minOpacity: 0.5
+                    }).addTo(this.map);
+
+                },
              clear(){
 
                  this.queryControl&&this.map.removeControl(this.queryControl);
@@ -506,7 +664,6 @@
                  }.bind(this));
                  this.setQueryParam({})
              },
-             //.............................
             addScale(){
               if (!this.scale){
                 this.scale=L.control.scale().addTo(this.map);

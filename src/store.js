@@ -13,6 +13,15 @@ export default new Vuex.Store({
       phone:'15532456754',
       address:'北京市朝阳区',
     },
+     caopingList:[],
+      infoBox:{},
+      work:{},
+      person:{},
+      worklist:[],
+      taskList:[],
+      userList:[],
+      manList:[],
+
     showCenter:false,
     distance:0,
     area:0,
@@ -29,10 +38,53 @@ export default new Vuex.Store({
         legendData1:[],
         seriesData:[],
         seriesData1:[],
-        statistic:{}
-      }
+        statistic:{},
+
+      },
+      devicePoint:{},
+      devicePoints:[]
   },
   mutations:{
+      setCaopingList(state,value){
+          state.caopingList=value;
+      },
+      pushCaoping(state,v){
+          state.caopingList.push(v);
+      },
+
+      setWorklist(state,v){
+          state.worklist=v;
+      },
+      setUserList(state,v){
+          state.userList=v;
+      },
+      setDevicePoint(state,v){
+          state.devicePoint=v;
+      },
+      setDevicePoints(state,v){
+          state.devicePoints=v;
+      },
+      putDevicePoints(state,v){
+          state.devicePoints.push(v);
+      },
+      popDevicePoints(state,v){
+          return state.devicePoints.pop();
+      },
+      setManList(state,v){
+          state.manList=v;
+      },
+      setTaskList(state,v){
+          state.taskList=v;
+      },
+      setInfoBox(state,v){
+          state.infoBox=v;
+      },
+      setPerson(state,v){
+          state.person=v;
+      },
+      setWork(state,v){
+          state.work=v;
+      },
       setQueryParam(state,v){
         state.queryParam=v;
       },

@@ -1,3 +1,4 @@
+<script src="../../common/api.js"></script>
 <template>
   <div :class="$style.root" >
      <Head :class="$style.item" :nav="nav" :title="title" ></Head>
@@ -12,7 +13,9 @@
       <DataManager :class="$style.DataManager" :option="dataManager"></DataManager>
       <Device :class="$style.Device" :option="device"></Device>
       <FullWindow></FullWindow>
-    <Chart :class="$style.Chart"></Chart>
+       <Chart :class="$style.Chart"></Chart>
+      <UserManager :class="$style.UserManager"></UserManager>
+      <Loading :class="$style.Loading"></Loading>
   </div>
 </template>
 
@@ -26,19 +29,24 @@
    import DataManager from '../part/DataManager'
    import AreaStatistics from '../part/AreaStatistics'
    import BchFZ from '../part/BchFZ'
+   import UserManager from '../part/UserManager'
    import Device from '../part/Device'
    import Chart from '../part/Chart'
+   import Loading from '../part/Loading'
    import MapTool from '../toolbar/MapTool'
    import Center from '../user/Center'
    import db from '../config/db'
    import FullWindow from '../common/FullWindow'
+   import {mapMutations,mapState} from 'vuex'
+   import {findAllUser} from '../../common/api'
     export default {
         name: "Index",
         components:{
           SecondMenu,
           Head,
           Map,
-          MapTool,Center,Query,DispatchTask,AreaStatistics,BchFZ,DataManager,Device,FullWindow,Chart
+          MapTool,Center,Query,DispatchTask,AreaStatistics,BchFZ,DataManager,Device,FullWindow,Chart,
+            UserManager,Loading
         },
         data:function () {
          return{
@@ -51,7 +59,7 @@
              statistics:config.AreaStatistics,
              bch:config.bch,
              dataManager: config.dataManager,
-             device:config.device
+             device:config.device,
          }
         },
         computed:{
@@ -68,10 +76,24 @@
             }
         },
         mounted() {
-              // this.$refs.query.map=this.getMap()
-            this.$Message.info('hello world!')
-        },
-      methods:{
+        //      请求用户数据
+            this.initUserManager()
+            Bus.$on('initUserManager',this.initUserManager)
+
+
+          },
+           methods:{
+            ...mapMutations([
+                'setUserList','setManList'
+            ]),
+           initUserManager(){
+             findAllUser(`zh=''`).then(e=>{
+                 if (e.data&&Array.isArray(e.data)){
+                     this.setUserList(e.data)
+                 }
+             })
+           },
+
           control(i){
             switch (Number.parseInt(i)) {
               case 0:
@@ -107,7 +129,8 @@
 
      /*pointer-events: none;*/
    }
-     .SecondMenu,.maptool,.center,.query,.DispatchTask,.AreaStatistics,.BchFZ,.MapTool,.DataManager,.Device,.Chart{
+     .SecondMenu,.maptool,.center,.query,.DispatchTask,.AreaStatistics,.BchFZ,.MapTool,
+     .DataManager,.Device,.Chart,.UserManager,.Loading{
          position: absolute;
          z-index: 999;
      }
@@ -131,7 +154,7 @@
          left:39%;
          top:20%
      }
-     .DispatchTask{
+     .DispatchTask,.UserManager{
          left:35%;
          top:20%
      }
@@ -157,5 +180,12 @@
          bottom:1%
 
      }
+     .Loading{
+         left:0;
+         top:0;
+          width: 100%;
+          height: 700px;
+     }
+
  }
 </style>
